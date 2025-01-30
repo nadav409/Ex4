@@ -8,7 +8,7 @@ public class Range2D {
     public Range2D(Index2D start, Index2D end) {
         this.start = start;
         this.end = end;
-        this.value = new String[][][end.getX() - start.getX()][end.getY() - end.getX()];
+        this.value = new String [end.getX() - start.getX()][end.getY() - end.getX()];
     }
 
     public Range2D(String range) {
@@ -19,7 +19,7 @@ public class Range2D {
         Index2D e = new CellEntry(end);
         this.start = s;
         this.end = e;
-        this.value = new String[][][e.getX() - s.getX()][e.getY() - s.getX()];
+        this.value = new String [e.getX() - s.getX()][e.getY() - s.getX()];
     }
 
     public Index2D getStart() {

@@ -26,6 +26,12 @@ public void setData(String s) {
         if (isNumber(s)) {
             type = Ex2Utils.NUMBER;
         }
+        if (isFunction(s)){
+            type = Ex2Utils.FUNCTION;
+        }
+        if(isIf(s)){
+            type = Ex2Utils.IF;
+        }
         if(s.startsWith("=")) {
             type = Ex2Utils.FORM;
         }
@@ -59,5 +65,46 @@ public void setData(String s) {
         }
         catch (Exception e) {;}
         return ans;
+    }
+    public static boolean isFunction(String line){
+        if (line == null || line.isEmpty()){
+            return false;
+        }
+        line = line.toLowerCase();
+        if(line.charAt(0) != '='){
+            return false;
+        }
+        for (int i = 0; i < Ex2Utils.FUNCTIONS.length; i++){
+            String current = Ex2Utils.FUNCTIONS[i];
+            if (line.length() > current.length()) {
+                String func = line.substring(1, current.length());
+                if (func.equals("=if")){
+                    return false;
+                }
+                if (func.equals(current)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    public static boolean isIf(String line){
+        if (line == null || line.isEmpty()){
+            return false;
+        }
+        line = line.toLowerCase();
+        if(line.charAt(0) != '='){
+            return false;
+        }
+        for (int i = 0; i < Ex2Utils.FUNCTIONS.length; i++){
+            String current = Ex2Utils.FUNCTIONS[i];
+            if (line.length() > current.length()) {
+                String func = line.substring(1, current.length());
+                if (func.equals("=if")){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
