@@ -91,7 +91,7 @@ public class Range2D {
     }
     public static String findStartAndEndValid(String line){
         int indexStart = line.indexOf("(");
-        return line.substring(indexStart+1);
+        int indexEnd = line.indexOf(")");
+        return line.substring(indexStart+1,indexEnd);
     }
-
 }
