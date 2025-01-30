@@ -204,7 +204,10 @@ public class Ex2Sheet implements Sheet {
             data[x][y] = getDouble(c.toString());
             return line;
         }
-        if (type == Ex2Utils.FORM | type == Ex2Utils.ERR_CYCLE_FORM || type== Ex2Utils.ERR_FORM_FORMAT) {
+        if (type == Ex2Utils.FUNCTION){
+            Range2D range = new Range2D(Range2D.findStartAndEndValid(line));
+        }
+        else if (type == Ex2Utils.FORM | type == Ex2Utils.ERR_CYCLE_FORM || type== Ex2Utils.ERR_FORM_FORMAT) {
             line = line.substring(1); // removing the first "="
             if (isForm(line)) {
                 Double dd = computeForm(x,y);

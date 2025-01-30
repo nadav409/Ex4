@@ -89,5 +89,9 @@ public class Range2D {
         Double average = Double.parseDouble(this.sumValue()) / this.value.length;
         return average.toString();
     }
+    public static String findStartAndEndValid(String line){
+        int indexStart = line.indexOf("(");
+        return line.substring(indexStart+1);
+    }
 
 }
