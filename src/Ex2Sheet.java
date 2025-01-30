@@ -80,7 +80,7 @@ public class Ex2Sheet implements Sheet {
             for (int y = 0; y < height(); y = y + 1) {
                 Cell c = table[x][y];
               if (dd[x][y] != -1 && c!=null && (c.getType()!= Ex2Utils.TEXT)) {
-                String res = eval(x, y);
+                String res = eval(x,y);
                     Double d = getDouble(res);
                     if(d==null) {
                         c.setType(Ex2Utils.ERR_FORM_FORMAT);
@@ -200,7 +200,7 @@ public class Ex2Sheet implements Sheet {
             return line;
         }
         int type = c.getType();
-        if(type== Ex2Utils.NUMBER) {
+        if(type == Ex2Utils.NUMBER) {
             data[x][y] = getDouble(c.toString());
             return line;
         }
