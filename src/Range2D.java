@@ -63,5 +63,31 @@ public class Range2D {
         }
         return min.toString();
     }
+    public String maxValue(){
+        Double max = Double.MIN_VALUE;
+        for(int i = 0; i<this.value.length; i++){
+            for (int j = 0; j<this.value[i].length; i++){
+                double current = Double.parseDouble(value[i][j]);
+                if (current > max){
+                    max = current;
+                }
+            }
+        }
+        return max.toString();
+    }
+    public String sumValue(){
+        Double sum = 0.0;
+        for(int i = 0; i<this.value.length; i++){
+            for (int j = 0; j<this.value[i].length; i++){
+                double current = Double.parseDouble(value[i][j]);
+                sum += current;
+            }
+        }
+        return sum.toString();
+    }
+    public String averageValue(){
+        Double average = Double.parseDouble(this.sumValue()) / this.value.length;
+        return average.toString();
+    }
 
 }
