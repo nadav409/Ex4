@@ -34,7 +34,7 @@ public class Ex2Sheet implements Sheet {
             c.setOrder(-1);
         } // BUG 345
       //  if(t==Ex2Utils.ERR_CYCLE_FORM) {ans = "ERR_CYCLE!";}
-        if(t== Ex2Utils.NUMBER || t== Ex2Utils.FORM) {
+        if(t== Ex2Utils.NUMBER || t== Ex2Utils.FORM || t == Ex2Utils.FUNCTION || t == Ex2Utils.IF) {
             ans = ""+data[x][y];
         }
         if(t== Ex2Utils.ERR_FORM_FORMAT) {ans = Ex2Utils.ERR_FORM;}
@@ -206,6 +206,9 @@ public class Ex2Sheet implements Sheet {
         }
         if (type == Ex2Utils.FUNCTION){
             Range2D range = new Range2D(Range2D.findStartAndEndValid(line));
+            range.updateValue(this);
+            Double dd1 = Double.parseDouble(range.minValue());
+            data[x][y] = dd1;
         }
         else if (type == Ex2Utils.FORM | type == Ex2Utils.ERR_CYCLE_FORM || type== Ex2Utils.ERR_FORM_FORMAT) {
             line = line.substring(1); // removing the first "="

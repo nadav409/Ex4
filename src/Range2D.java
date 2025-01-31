@@ -8,7 +8,7 @@ public class Range2D {
     public Range2D(Index2D start, Index2D end) {
         this.start = start;
         this.end = end;
-        this.value = new String [end.getX() - start.getX()][end.getY() - end.getX()];
+        this.value = new String [end.getY() - start.getY() + 1][end.getX() - end.getX() + 1];
     }
 
     public Range2D(String range) {
@@ -19,7 +19,8 @@ public class Range2D {
         Index2D e = new CellEntry(end);
         this.start = s;
         this.end = e;
-        this.value = new String [e.getX() - s.getX()][e.getY() - s.getX()];
+        this.value = new String [e.getY() - s.getY() + 1][e.getX() - s.getX() + 1];
+
     }
 
     public Index2D getStart() {
@@ -41,20 +42,16 @@ public class Range2D {
         return cells;
     }
     public void updateValue(Ex2Sheet table){
-        int i = 0;
-        int j = 0;
-        for (int row = start.getX(); row <= end.getX(); row++) {
-            for (int col = start.getY(); col <= end.getY(); col++) {
-               this.value[i][j] = table.value(row,col);
-               j++;
+        for (int i = 0, row = start.getY(); row <= end.getY(); i++, row++) {
+            for (int j = 0, col = start.getX(); col <= end.getX(); j++, col++) {
+                this.value[i][j] = table.value(row, col);
             }
-            i++;
         }
     }
     public String minValue(){
         Double min = Double.MAX_VALUE;
         for(int i = 0; i<this.value.length; i++){
-            for (int j = 0; j<this.value[i].length; i++){
+            for (int j = 0; j<this.value[0].length; j++){
                 double current = Double.parseDouble(value[i][j]);
                 if (current < min){
                     min = current;

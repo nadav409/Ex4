@@ -26,13 +26,13 @@ public void setData(String s) {
         if (isNumber(s)) {
             type = Ex2Utils.NUMBER;
         }
-        if (isFunction(s)){
+        else if (isFunction(s)){
             type = Ex2Utils.FUNCTION;
         }
-        if(isIf(s)){
+        else if(isIf(s)){
             type = Ex2Utils.IF;
         }
-        if(s.startsWith("=")) {
+        else if(s.startsWith("=")) {
             type = Ex2Utils.FORM;
         }
         _line = s;
@@ -77,7 +77,7 @@ public void setData(String s) {
         for (int i = 0; i < Ex2Utils.FUNCTIONS.length; i++){
             String current = Ex2Utils.FUNCTIONS[i];
             if (line.length() > current.length()) {
-                String func = line.substring(1, current.length());
+                String func = line.substring(1, current.length()+1);
                 if (func.equals("=if")){
                     return false;
                 }
