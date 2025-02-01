@@ -42,9 +42,11 @@ public class Range2D {
         return cells;
     }
     public void updateValue(Ex2Sheet table){
-        for (int i = 0, row = start.getY(); row <= end.getY(); i++, row++) {
-            for (int j = 0, col = start.getX(); col <= end.getX(); j++, col++) {
-                this.value[i][j] = table.value(row, col);
+        int height = end.getY() - start.getY() + 1;
+        int width = end.getX() - start.getX() + 1;
+        for (int i = 0, row = start.getY(); i < height; i++, row++) {
+            for (int j = 0, col = start.getX(); j < width; j++, col++) {
+                this.value[i][j] = table.value(col,row);
             }
         }
     }
