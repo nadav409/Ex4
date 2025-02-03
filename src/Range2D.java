@@ -41,6 +41,16 @@ public class Range2D {
         }
         return cells;
     }
+    public ArrayList<String> getCellNames() {
+        ArrayList<String> cellNames = new ArrayList<>();
+        for (int row = start.getX(); row <= end.getX(); row++) {
+            for (int col = start.getY(); col <= end.getY(); col++) {
+                String cellCurrent = Ex2Utils.ABC[row] + col;
+                cellNames.add(cellCurrent);
+            }
+        }
+        return cellNames;
+    }
     public void updateValue(Ex2Sheet table){
         int height = end.getY() - start.getY() + 1;
         int width = end.getX() - start.getX() + 1;
@@ -92,5 +102,13 @@ public class Range2D {
         int indexStart = line.indexOf("(");
         int indexEnd = line.indexOf(")");
         return line.substring(indexStart+1,indexEnd);
+    }
+    public static String AllCellsInRange(String line){
+        int indexStart = line.indexOf("(");
+        int indexEnd = line.indexOf(")");
+        String range = line.substring(indexStart + 1,indexEnd);
+        Range2D current = new Range2D(range);
+        ArrayList<String> CellsInRange = current.getCellNames();
+        return CellsInRange.toString();
     }
 }
