@@ -34,11 +34,16 @@ public class Ex2Sheet implements Sheet {
             c.setOrder(-1);
         } // BUG 345
       //  if(t==Ex2Utils.ERR_CYCLE_FORM) {ans = "ERR_CYCLE!";}
+        if (t == Ex2Utils.FUNC_ERR_FORMAT){
+            ans = Ex2Utils.FUNC_ERR;
+        }
         if(t== Ex2Utils.NUMBER || t== Ex2Utils.FORM || t == Ex2Utils.FUNCTION || t == Ex2Utils.IF) {
             ans = ""+data[x][y];
         }
         if(t== Ex2Utils.ERR_FORM_FORMAT) {ans = Ex2Utils.ERR_FORM;}
+
         return ans;
+
     }
 
     @Override
@@ -83,7 +88,9 @@ public class Ex2Sheet implements Sheet {
                 String res = eval(x,y);
                     Double d = getDouble(res);
                     if(d==null) {
-                        c.setType(Ex2Utils.ERR_FORM_FORMAT);
+                        if (c.getType() != Ex2Utils.FUNC_ERR_FORMAT) {
+                            c.setType(Ex2Utils.ERR_FORM_FORMAT);
+                        }
                     }
                     else {
                         data[x][y] = d;
@@ -205,20 +212,26 @@ public class Ex2Sheet implements Sheet {
             return line;
         }
         if (type == Ex2Utils.FUNCTION){
+            if (!Range2D.ValidFunction(line)){
+                c.setType(Ex2Utils.FUNC_ERR_FORMAT);
+            }
+            else {
             Range2D range = new Range2D(Range2D.findStartAndEndValid(line));
             range.updateValue(this);
-            Double dd1 = Double.parseDouble(range.minValue());
-            data[x][y] = dd1;
+                Double dd1 = Double.parseDouble(range.minValue());
+                data[x][y] = dd1;
+            }
         }
         else if (type == Ex2Utils.FORM | type == Ex2Utils.ERR_CYCLE_FORM || type== Ex2Utils.ERR_FORM_FORMAT) {
             line = line.substring(1); // removing the first "="
             if (isForm(line)) {
-                Double dd = computeForm(x,y);
+                Double dd = computeForm(x, y);
                 data[x][y] = dd;
-                if(dd==null) {
+                if (dd == null) {
                     c.setType(Ex2Utils.ERR_FORM_FORMAT);
                 }
                 else {c.setType(Ex2Utils.FORM);}
+
         }
         else {data[x][y] = null;}
         }

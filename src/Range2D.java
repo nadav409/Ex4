@@ -111,4 +111,30 @@ public class Range2D {
         ArrayList<String> CellsInRange = current.getCellNames();
         return CellsInRange.toString();
     }
+    public static boolean ValidFunction(String line){
+        int space = line.indexOf(" ");
+        if (space != -1){
+            return false;
+        }
+        if (line.charAt(line.length() -1) != ')'){
+            return false;
+        }
+        int indexStart = line.indexOf("(");
+        int indexMiddle = line.indexOf(":");
+        int indexEnd = line.length() - 1;
+        if (indexStart == -1 || indexMiddle == -1 ){
+            return false;
+        }
+        String startRange = line.substring(indexStart + 1,indexMiddle);
+        String endRange = line.substring(indexMiddle + 1,indexEnd);
+        CellEntry firstCell = new CellEntry(startRange);
+        CellEntry lastCell = new CellEntry(endRange);
+        if(lastCell.getX() < firstCell.getX() || lastCell.getY() < firstCell.getY()){
+            return false;
+        }
+        if (!firstCell.isValid() || !lastCell.isValid()){
+            return false;
+        }
+        return true;
+    }
 }
