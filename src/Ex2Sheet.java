@@ -508,13 +508,13 @@ public class Ex2Sheet implements Sheet {
         }
         return true;
     }
-    public static String IfCondition(String line){
+    public static String ifCondition(String line){
         int indexEnd = line.indexOf(",");
         String condition = line.substring(4,indexEnd);
         return condition;
     }
     public boolean evaluateCondition(String line){
-        String condition = IfCondition(line);
+        String condition = ifCondition(line);
         if (condition.contains("<=")){
             int split = condition.indexOf("<=");
             String form1 = condition.substring(0,split);
@@ -552,5 +552,15 @@ public class Ex2Sheet implements Sheet {
             return computeFormP(form1) < computeFormP(form2);
         }
         return true;
+    }
+    public static String ifTrue(String line){
+        int indexEndCondition = line.indexOf(",");
+        int indexEndTrue = line.indexOf(",",indexEndCondition +1);
+        return line.substring(indexEndCondition + 1,indexEndTrue);
+    }
+    public static String ifFalse(String line){
+        int indexEndCondition = line.indexOf(",");
+        int indexEndTrue = line.indexOf(",",indexEndCondition +1);
+        return line.substring(indexEndTrue + 1,line.length() -1);
     }
 }
