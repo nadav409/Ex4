@@ -189,4 +189,5 @@ public class Range2D {
         int indexEnd = line.indexOf("(");
         return line.substring(1, indexEnd).equals("average");
     }
+
 }

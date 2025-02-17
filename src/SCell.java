@@ -78,7 +78,7 @@ public void setData(String s) {
             String current = Ex2Utils.FUNCTIONS[i];
             if (line.length() > current.length()) {
                 String func = line.substring(1, current.length()+1);
-                if (func.equals("=if")){
+                if (func.equals("if")){
                     return false;
                 }
                 if (func.equals(current)) {
@@ -100,7 +100,7 @@ public void setData(String s) {
             String current = Ex2Utils.FUNCTIONS[i];
             if (line.length() > current.length()) {
                 String func = line.substring(1, current.length());
-                if (func.equals("=if")){
+                if (func.equals("if")){
                     return true;
                 }
             }

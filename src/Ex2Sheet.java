@@ -88,7 +88,7 @@ public class Ex2Sheet implements Sheet {
                 String res = eval(x,y);
                     Double d = getDouble(res);
                     if(d==null) {
-                        if (c.getType() != Ex2Utils.FUNC_ERR_FORMAT) {
+                        if (c.getType() != Ex2Utils.FUNC_ERR_FORMAT && c.getType() != Ex2Utils.IF_ERR_FORMAT) {
                             c.setType(Ex2Utils.ERR_FORM_FORMAT);
                         }
                     }
@@ -233,6 +233,15 @@ public class Ex2Sheet implements Sheet {
                     Double dd1 = Double.parseDouble(range.averageValue());
                     data[x][y] = dd1;
                 }
+            }
+        }
+        else if (type == Ex2Utils.IF){
+            if (!BasicValidIF(line)){
+                c.setType(Ex2Utils.IF_ERR_FORMAT);
+            }
+            else {
+                Double dd1 = evaluateIf(line);
+                data[x][y] = dd1;
             }
         }
         else if (type == Ex2Utils.FORM | type == Ex2Utils.ERR_CYCLE_FORM || type== Ex2Utils.ERR_FORM_FORMAT) {
@@ -562,5 +571,22 @@ public class Ex2Sheet implements Sheet {
         int indexEndCondition = line.indexOf(",");
         int indexEndTrue = line.indexOf(",",indexEndCondition +1);
         return line.substring(indexEndTrue + 1,line.length() -1);
+    }
+    public Double evaluateIf(String line){
+        if (evaluateCondition(line)){
+            String trueCondition = ifTrue(line);
+            if (isNumber(trueCondition)){
+                return Double.parseDouble(trueCondition);
+            }
+            return computeFormP(trueCondition.substring(1));
+        }
+        else {
+            String falseCondition = ifFalse(line);
+            if (isNumber(falseCondition)){
+                return Double.parseDouble(falseCondition);
+
+            }
+
+        }
     }
 }
