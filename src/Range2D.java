@@ -8,7 +8,7 @@ public class Range2D {
     public Range2D(Index2D start, Index2D end) {
         this.start = start;
         this.end = end;
-        this.value = new String [end.getY() - start.getY() + 1][end.getX() - end.getX() + 1];
+        this.value = new String[end.getY() - start.getY() + 1][end.getX() - start.getX() + 1];
     }
 
     public Range2D(String range) {
@@ -19,7 +19,7 @@ public class Range2D {
         Index2D e = new CellEntry(end);
         this.start = s;
         this.end = e;
-        this.value = new String [e.getY() - s.getY() + 1][e.getX() - s.getX() + 1];
+        this.value = new String[e.getY() - s.getY() + 1][e.getX() - s.getX() + 1];
 
     }
 
@@ -41,6 +41,7 @@ public class Range2D {
         }
         return cells;
     }
+
     public ArrayList<String> getCellNames() {
         ArrayList<String> cellNames = new ArrayList<>();
         for (int row = start.getX(); row <= end.getX(); row++) {
@@ -51,90 +52,122 @@ public class Range2D {
         }
         return cellNames;
     }
-    public void updateValue(Ex2Sheet table){
+
+    public void updateValue(Ex2Sheet table) {
         int height = end.getY() - start.getY() + 1;
         int width = end.getX() - start.getX() + 1;
         for (int i = 0, row = start.getY(); i < height; i++, row++) {
             for (int j = 0, col = start.getX(); j < width; j++, col++) {
-                this.value[i][j] = table.value(col,row);
+                this.value[i][j] = table.eval(col, row);
             }
         }
     }
-    public String minValue(){
+
+    public String minValue() {
         Double min = Double.MAX_VALUE;
-        for(int i = 0; i<this.value.length; i++){
-            for (int j = 0; j<this.value[0].length; j++){
+        for (int i = 0; i < this.value.length; i++) {
+            for (int j = 0; j < this.value[0].length; j++) {
                 double current = Double.parseDouble(value[i][j]);
-                if (current < min){
+                if (current < min) {
                     min = current;
                 }
             }
         }
         return min.toString();
     }
-    public String maxValue(){
+
+    public String maxValue() {
         Double max = Double.MIN_VALUE;
-        for(int i = 0; i<this.value.length; i++){
-            for (int j = 0; j<this.value[i].length; i++){
+        for (int i = 0; i < this.value.length; i++) {
+            for (int j = 0; j < this.value[0].length; j++) {
                 double current = Double.parseDouble(value[i][j]);
-                if (current > max){
+                if (current > max) {
                     max = current;
                 }
             }
         }
         return max.toString();
     }
-    public String sumValue(){
+
+    public String sumValue() {
         Double sum = 0.0;
-        for(int i = 0; i<this.value.length; i++){
-            for (int j = 0; j<this.value[i].length; i++){
+        for (int i = 0; i < this.value.length; i++) {
+            for (int j = 0; j < this.value[0].length; j++) {
                 double current = Double.parseDouble(value[i][j]);
                 sum += current;
             }
         }
         return sum.toString();
     }
-    public String averageValue(){
+
+    public String averageValue() {
         Double average = Double.parseDouble(this.sumValue()) / this.value.length;
         return average.toString();
     }
-    public static String findStartAndEndValid(String line){
+
+    public static String findStartAndEndValid(String line) {
         int indexStart = line.indexOf("(");
         int indexEnd = line.indexOf(")");
-        return line.substring(indexStart+1,indexEnd);
+        return line.substring(indexStart + 1, indexEnd);
     }
-    public static String AllCellsInRange(String line){
+
+    public static String AllCellsInRange(String line) {
         int indexStart = line.indexOf("(");
         int indexEnd = line.indexOf(")");
-        String range = line.substring(indexStart + 1,indexEnd);
+        String range = line.substring(indexStart + 1, indexEnd);
         Range2D current = new Range2D(range);
         ArrayList<String> CellsInRange = current.getCellNames();
         return CellsInRange.toString();
     }
-    public static boolean ValidFunction(String line){
+
+    public static boolean ValidFunction(String line) {
         int space = line.indexOf(" ");
-        if (space != -1){
+        if (space != -1) {
             return false;
         }
-        if (line.charAt(line.length() -1) != ')'){
+        if (line.charAt(line.length() - 1) != ')') {
             return false;
         }
         int indexStart = line.indexOf("(");
         int indexMiddle = line.indexOf(":");
         int indexEnd = line.length() - 1;
-        if (indexStart == -1 || indexMiddle == -1 ){
+        if (indexStart == -1 || indexMiddle == -1) {
             return false;
         }
-        String startRange = line.substring(indexStart + 1,indexMiddle);
-        String endRange = line.substring(indexMiddle + 1,indexEnd);
+        String startRange = line.substring(indexStart + 1, indexMiddle);
+        String endRange = line.substring(indexMiddle + 1, indexEnd);
         CellEntry firstCell = new CellEntry(startRange);
         CellEntry lastCell = new CellEntry(endRange);
-        if(lastCell.getX() < firstCell.getX() || lastCell.getY() < firstCell.getY()){
+        if (lastCell.getX() < firstCell.getX() || lastCell.getY() < firstCell.getY()) {
             return false;
         }
-        if (!firstCell.isValid() || !lastCell.isValid()){
+        if (!firstCell.isValid() || !lastCell.isValid()) {
             return false;
         }
         return true;
+    }
+
+    static boolean MinFunction(String line) {
+        line.toLowerCase();
+        int indexEnd = line.indexOf("(");
+        return line.substring(1, indexEnd).equals("min");
+    }
+
+    static boolean MaxFunction(String line) {
+        line.toLowerCase();
+        int indexEnd = line.indexOf("(");
+        return line.substring(1, indexEnd).equals("max");
+    }
+
+    static boolean SumFunction(String line) {
+        line.toLowerCase();
+        int indexEnd = line.indexOf("(");
+        return line.substring(1, indexEnd).equals("sum");
+    }
+
+    static boolean AverageFunction(String line) {
+        line.toLowerCase();
+        int indexEnd = line.indexOf("(");
+        return line.substring(1, indexEnd).equals("average");
     }
 }

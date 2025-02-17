@@ -211,15 +211,28 @@ public class Ex2Sheet implements Sheet {
             data[x][y] = getDouble(c.toString());
             return line;
         }
-        if (type == Ex2Utils.FUNCTION){
-            if (!Range2D.ValidFunction(line)){
+        if (type == Ex2Utils.FUNCTION) {
+            if (!Range2D.ValidFunction(line)) {
                 c.setType(Ex2Utils.FUNC_ERR_FORMAT);
-            }
-            else {
-            Range2D range = new Range2D(Range2D.findStartAndEndValid(line));
-            range.updateValue(this);
-                Double dd1 = Double.parseDouble(range.minValue());
-                data[x][y] = dd1;
+            } else {
+                Range2D range = new Range2D(Range2D.findStartAndEndValid(line));
+                range.updateValue(this);
+                if (Range2D.MinFunction(line)) {
+                    Double dd1 = Double.parseDouble(range.minValue());
+                    data[x][y] = dd1;
+                }
+                else if (Range2D.MaxFunction(line)) {
+                    Double dd1 = Double.parseDouble(range.maxValue());
+                    data[x][y] = dd1;
+                }
+                else if(Range2D.SumFunction(line)){
+                    Double dd1 = Double.parseDouble(range.sumValue());
+                    data[x][y] = dd1;
+                }
+                else {
+                    Double dd1 = Double.parseDouble(range.averageValue());
+                    data[x][y] = dd1;
+                }
             }
         }
         else if (type == Ex2Utils.FORM | type == Ex2Utils.ERR_CYCLE_FORM || type== Ex2Utils.ERR_FORM_FORMAT) {
@@ -332,6 +345,9 @@ public class Ex2Sheet implements Sheet {
     }
     public static ArrayList<Index2D> allCells(String line) {
         ArrayList<Index2D> ans = new ArrayList<Index2D>();
+        if (Range2D.ValidFunction(line)){
+            line = Range2D.AllCellsInRange(line);
+        }
         int i=0;
         int len = line.length();
         while(i<len) {
