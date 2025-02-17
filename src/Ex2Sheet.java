@@ -584,9 +584,8 @@ public class Ex2Sheet implements Sheet {
             String falseCondition = ifFalse(line);
             if (isNumber(falseCondition)){
                 return Double.parseDouble(falseCondition);
-
             }
-
         }
+        return null;
     }
 }
