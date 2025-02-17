@@ -434,7 +434,7 @@ public class Ex2Sheet implements Sheet {
         }
         return ans;
     }
-    public static int findLastOp(String form) {
+    private static int findLastOp(String form) {
         int ans = -1;
         double s1=0,min=-1;
         for(int i=0;i<form.length();i++) {
@@ -513,7 +513,7 @@ public class Ex2Sheet implements Sheet {
         String condition = line.substring(4,indexEnd);
         return condition;
     }
-    private boolean evaluateCondition(String line){
+    public boolean evaluateCondition(String line){
         String condition = IfCondition(line);
         if (condition.contains("<=")){
             int split = condition.indexOf("<=");
@@ -546,7 +546,7 @@ public class Ex2Sheet implements Sheet {
             return computeFormP(form1) > computeFormP(form2);
         }
         else if (condition.contains("<")){
-            int split = condition.indexOf(">");
+            int split = condition.indexOf("<");
             String form1 = condition.substring(0,split);
             String form2 = condition.substring(split + 1);
             return computeFormP(form1) < computeFormP(form2);
