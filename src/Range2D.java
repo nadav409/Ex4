@@ -101,7 +101,9 @@ public class Range2D {
     }
 
     public String averageValue() {
-        Double average = Double.parseDouble(this.sumValue()) / this.value.length;
+        String sum = this.sumValue();
+        Double sum1 = Double.parseDouble(sum);
+        Double average = sum1 / (this.value.length + this.value[0].length);
         return average.toString();
     }
 
@@ -118,6 +120,23 @@ public class Range2D {
         Range2D current = new Range2D(range);
         ArrayList<String> CellsInRange = current.getCellNames();
         return CellsInRange.toString();
+    }
+    public static boolean BasicValidFunction(String line){
+        line.toLowerCase();
+        if (line.charAt(0) != '='){
+            return false;
+        }
+        int indexEnd = line.indexOf("(");
+        if(indexEnd == -1){
+            return false;
+        }
+        String functionName = line.substring(1,indexEnd);
+        if (functionName.equals("min") || functionName.equals("max") || functionName.equals("sum") || functionName.equals("average")){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     public static boolean ValidFunction(String line) {

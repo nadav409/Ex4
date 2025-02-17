@@ -496,4 +496,61 @@ public class Ex2Sheet implements Sheet {
         catch (Exception e) {;}
         return ans;
     }
+    public static boolean BasicValidIF(String line){
+        if(line.isEmpty()){
+            return false;
+        }
+        if (line.length() < 3){
+            return false;
+        }
+        if (!(line.startsWith("=if"))){
+            return false;
+        }
+        return true;
+    }
+    public static String IfCondition(String line){
+        int indexEnd = line.indexOf(",");
+        String condition = line.substring(4,indexEnd);
+        return condition;
+    }
+    private boolean evaluateCondition(String line){
+        String condition = IfCondition(line);
+        if (condition.contains("<=")){
+            int split = condition.indexOf("<=");
+            String form1 = condition.substring(0,split);
+            String form2 = condition.substring(split + 2);
+            return computeFormP(form1) <= computeFormP(form2);
+        }
+        else if (condition.contains(">=")){
+            int split = condition.indexOf(">=");
+            String form1 = condition.substring(0,split);
+            String form2 = condition.substring(split + 2);
+            return computeFormP(form1) >= computeFormP(form2);
+        }
+        else if (condition.contains("==")){
+            int split = condition.indexOf("==");
+            String form1 = condition.substring(0,split);
+            String form2 = condition.substring(split + 2);
+            return computeFormP(form1).equals(computeFormP(form2));
+        }
+        else if (condition.contains("!=")){
+            int split = condition.indexOf("!=");
+            String form1 = condition.substring(0,split);
+            String form2 = condition.substring(split + 2);
+            return computeFormP(form1) != computeFormP(form2);
+        }
+        else if (condition.contains(">")){
+            int split = condition.indexOf(">");
+            String form1 = condition.substring(0,split);
+            String form2 = condition.substring(split + 1);
+            return computeFormP(form1) > computeFormP(form2);
+        }
+        else if (condition.contains("<")){
+            int split = condition.indexOf(">");
+            String form1 = condition.substring(0,split);
+            String form2 = condition.substring(split + 1);
+            return computeFormP(form1) < computeFormP(form2);
+        }
+        return true;
+    }
 }
