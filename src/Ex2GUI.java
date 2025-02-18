@@ -71,6 +71,7 @@ public class Ex2GUI {
 		if(t== Ex2Utils.IF) {ans=Color.ORANGE;}
 		if(t== Ex2Utils.FUNC_ERR_FORMAT) {ans=Color.RED;}
 		if(t== Ex2Utils.ERR_FORM_FORMAT) {ans=Color.RED;}
+		if(t== Ex2Utils.ERR_WRONG_IF){ans=Color.RED;}
 		if(t== Ex2Utils.IF_ERR_FORMAT) {ans=Color.RED;}
 		if(t== Ex2Utils.ERR_CYCLE_FORM) {ans= StdDrawEx2.BOOK_RED;}
 		return ans;

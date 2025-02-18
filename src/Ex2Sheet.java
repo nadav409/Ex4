@@ -48,6 +48,9 @@ public class Ex2Sheet implements Sheet {
                 return (String) ifResult;
             }
         }
+        if (t == Ex2Utils.ERR_WRONG_IF){
+            ans = Ex2Utils.ERRWRONG_IF;
+        }
         if (t == Ex2Utils.NUMBER || t == Ex2Utils.FORM || t == Ex2Utils.FUNCTION) {
             ans = "" + data[x][y];
         }
@@ -103,7 +106,7 @@ public class Ex2Sheet implements Sheet {
                     String res = eval(x, y);
                     Double d = getDouble(res);
                     if (d == null) {
-                        if (c.getType() != Ex2Utils.FUNC_ERR_FORMAT && c.getType() != Ex2Utils.IF_ERR_FORMAT && c.getType() != Ex2Utils.IF) {
+                        if (c.getType() != Ex2Utils.FUNC_ERR_FORMAT && c.getType() != Ex2Utils.IF_ERR_FORMAT && c.getType() != Ex2Utils.IF && c.getType() != Ex2Utils.ERR_WRONG_IF) {
                             c.setType(Ex2Utils.ERR_FORM_FORMAT);
                         }
                     } else {
@@ -133,7 +136,7 @@ public class Ex2Sheet implements Sheet {
             for (int y = 0; y < height(); y = y + 1) {
                 Cell c = this.get(x, y);
                 int t = c.getType();
-                if (Ex2Utils.TEXT != t) {
+                if (Ex2Utils.TEXT != t && Ex2Utils.IF != t) {
                     ans[x][y] = -1;
                 }
             }
@@ -242,8 +245,8 @@ public class Ex2Sheet implements Sheet {
                 data[x][y] = dd1;
             }
         } else if (type == Ex2Utils.IF) {
-            if (!BasicValidIF(line)) {
-                c.setType(Ex2Utils.IF_ERR_FORMAT);
+            if (!validIf(line)) {
+                c.setType(Ex2Utils.ERR_WRONG_IF);
             } else {
                 Object ifResult = evaluateIf(line);
                 if (ifResult instanceof Double) {
@@ -578,6 +581,9 @@ public class Ex2Sheet implements Sheet {
     }
 
     public static String ifCondition(String line) {
+        if(line.length()<12){
+            return "";
+        }
         int indexEnd = line.indexOf(",");
         String condition = line.substring(4, indexEnd);
         return condition;
@@ -704,10 +710,18 @@ public class Ex2Sheet implements Sheet {
         if(!validConditionIf(ifCondition(_line))){
             return false;
         }
+        if (!validIfTrueAndFalse(ifTrue(_line))){
+            return false;
+        }
+        if (!validIfTrueAndFalse(ifFalse(_line))){
+            return false;
+        }
         return true;
     }
-
     public boolean validConditionIf(String _line) {
+        if (_line.isEmpty()){
+            return false;
+        }
         int pass = 0;
         String oprator = null;
         for (int i = 0; i < Ex2Utils.B_OPS.length; i++) {
@@ -732,11 +746,11 @@ public class Ex2Sheet implements Sheet {
             return false;
         }
         if (leftFormula.charAt(0) == '=') {
-            if (computeFormP(leftFormula.substring(1)) == null) {
+            if (!isForm(leftFormula.substring(1))) {
                 return false;
             }
         } else {
-            if (computeFormP(leftFormula) == null) {
+            if (!isForm(leftFormula)) {
                 return false;
             }
         }
@@ -744,15 +758,33 @@ public class Ex2Sheet implements Sheet {
             return false;
         }
         if (rightFormula.charAt(0) == '=') {
-            if (computeFormP(rightFormula.substring(1)) == null) {
+            if (!isForm(rightFormula.substring(1))) {
                 return false;
             } else {
-                if (computeFormP(rightFormula) == null) {
+                if (!isForm(rightFormula)) {
                     return false;
                 }
             }
         }
         return true;
+    }
+    public boolean validIfTrueAndFalse(String line) {
+        if (line.charAt(0) != '='){
+            return true;
+        }
+        if (isForm(line) ){
+            return true;
+        }
+        if (isNumber(line)){
+            return true;
+        }
+        if (Range2D.ValidFunction(line)){
+            return true;
+        }
+        if (validIf(line)){
+            return true;
+        }
+        return false;
     }
 
     public static int countOccurrences(String text, String sub) {
