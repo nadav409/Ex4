@@ -704,6 +704,9 @@ public class Ex2Sheet implements Sheet {
         if (_line.isEmpty() || _line.isBlank()) {
             return false;
         }
+        if (ifTrue(_line).equals(_line) || ifFalse(_line).equals(_line)) {
+            return false;
+        }
         if (_line.contains(" ")) {
             return false;
         }
@@ -769,6 +772,9 @@ public class Ex2Sheet implements Sheet {
         return true;
     }
     public boolean validIfTrueAndFalse(String line) {
+        if (line.isEmpty()){
+            return false;
+        }
         if (line.charAt(0) != '='){
             return true;
         }
