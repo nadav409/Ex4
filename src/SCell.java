@@ -107,4 +107,7 @@ public void setData(String s) {
         }
         return false;
     }
+    public static boolean BasicIsForm(String _line){
+        return _line.charAt(0) == '=' && !isFunction(_line) && !isIf(_line);
+    }
 }

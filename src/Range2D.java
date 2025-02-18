@@ -189,5 +189,23 @@ public class Range2D {
         int indexEnd = line.indexOf("(");
         return line.substring(1, indexEnd).equals("average");
     }
+    public Double evaluateFunction(String line){
+        if (Range2D.MinFunction(line)) {
+            Double dd = Double.parseDouble(this.minValue());
+            return dd;
+        }
+        else if (Range2D.MaxFunction(line)) {
+            Double dd = Double.parseDouble(this.maxValue());
+            return dd;
+        }
+        else if(Range2D.SumFunction(line)){
+            Double dd = Double.parseDouble(this.sumValue());
+            return dd;
+        }
+        else {
+            Double dd = Double.parseDouble(this.averageValue());
+            return dd;
+        }
+    }
 
 }
