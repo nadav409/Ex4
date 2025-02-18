@@ -1,8 +1,8 @@
 public class Ex2SheetTest {
     public static void main(String[] a) {
         Ex2Sheet test = new Ex2Sheet();
-        String formtest = "=(a2:a5)";
-        System.out.println(SCell.BasicIsForm(formtest));
+        String formtest = "15>2";
+        System.out.println(Ex2Sheet.v(formtest));
 
     }
 }

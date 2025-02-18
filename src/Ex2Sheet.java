@@ -39,16 +39,16 @@ public class Ex2Sheet implements Sheet {
         if (t == Ex2Utils.FUNC_ERR_FORMAT) {
             ans = Ex2Utils.FUNC_ERR;
         }
-        if (t == Ex2Utils.IF){
+        if (t == Ex2Utils.IF) {
             Object ifResult = evaluateIf(ans);
-            if(ifResult instanceof Double){
+            if (ifResult instanceof Double) {
                 return ifResult.toString();
             }
-            if (ifResult instanceof String){
+            if (ifResult instanceof String) {
                 return (String) ifResult;
             }
         }
-        if (t == Ex2Utils.NUMBER || t == Ex2Utils.FORM || t == Ex2Utils.FUNCTION ) {
+        if (t == Ex2Utils.NUMBER || t == Ex2Utils.FORM || t == Ex2Utils.FUNCTION) {
             ans = "" + data[x][y];
         }
         if (t == Ex2Utils.ERR_FORM_FORMAT) {
@@ -260,8 +260,7 @@ public class Ex2Sheet implements Sheet {
                 } else {
                     c.setType(Ex2Utils.FORM);
                 }
-            }
-            else {
+            } else {
                 data[x][y] = null;
             }
         }
@@ -583,6 +582,7 @@ public class Ex2Sheet implements Sheet {
         String condition = line.substring(4, indexEnd);
         return condition;
     }
+
     public boolean evaluateCondition(String line) {
         String condition = ifCondition(line);
         if (condition.contains("<=")) {
@@ -616,7 +616,7 @@ public class Ex2Sheet implements Sheet {
             String form2 = condition.substring(split + 1);
             return computeFormP(form1) < computeFormP(form2);
         }
-        return true;
+        return false;
     }
 
     public static String ifTrue(String line) {
@@ -639,6 +639,7 @@ public class Ex2Sheet implements Sheet {
         }
         return line.substring(indexIfTrueStart, indexIfTrueEnd);
     }
+
     public static String ifFalse(String line) {
         int indexEndCondition = line.indexOf(",");
         int indexIfTrueStart = indexEndCondition + 1;
@@ -653,7 +654,7 @@ public class Ex2Sheet implements Sheet {
                 break;
             }
         }
-        return line.substring(indexIfTrueEnd + 1,line.length()-1);
+        return line.substring(indexIfTrueEnd + 1, line.length() - 1);
     }
 
     public Object evaluateIf(String line) {
@@ -670,7 +671,7 @@ public class Ex2Sheet implements Sheet {
             if (SCell.BasicIsForm(trueCondition)) {
                 return computeFormP(trueCondition.substring(1));
             }
-            if(SCell.isIf(trueCondition)){
+            if (SCell.isIf(trueCondition)) {
                 return evaluateIf(trueCondition);
             }
             return trueCondition;
@@ -687,10 +688,80 @@ public class Ex2Sheet implements Sheet {
             if (SCell.BasicIsForm(falseCondition)) {
                 return computeFormP(falseCondition.substring(1));
             }
-            if(SCell.isIf(falseCondition)){
+            if (SCell.isIf(falseCondition)) {
                 return evaluateIf(falseCondition);
             }
             return falseCondition;
         }
+    }
+    public boolean validIf(String _line) {
+        if (_line.isEmpty() || _line.isBlank()) {
+            return false;
+        }
+        if (_line.contains(" ")) {
+            return false;
+        }
+        if(!validConditionIf(ifCondition(_line))){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean validConditionIf(String _line) {
+        int pass = 0;
+        String oprator = null;
+        for (int i = 0; i < Ex2Utils.B_OPS.length; i++) {
+            if (countOccurrences(_line, Ex2Utils.B_OPS[i]) > 1) {
+                return false;
+            }
+            if (_line.contains(Ex2Utils.B_OPS[i])) {
+                pass++;
+                oprator = Ex2Utils.B_OPS[i];
+            }
+        }
+        if (pass != 1 || oprator == null) {
+            return false;
+        }
+        int indexOperator = _line.indexOf(oprator);
+        if (indexOperator == -1) {
+            return false;
+        }
+        String leftFormula = _line.substring(0, indexOperator);
+        String rightFormula = _line.substring(indexOperator + oprator.length());
+        if (leftFormula.isEmpty()) {
+            return false;
+        }
+        if (leftFormula.charAt(0) == '=') {
+            if (computeFormP(leftFormula.substring(1)) == null) {
+                return false;
+            }
+        } else {
+            if (computeFormP(leftFormula) == null) {
+                return false;
+            }
+        }
+        if (rightFormula.isEmpty()){
+            return false;
+        }
+        if (rightFormula.charAt(0) == '=') {
+            if (computeFormP(rightFormula.substring(1)) == null) {
+                return false;
+            } else {
+                if (computeFormP(rightFormula) == null) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static int countOccurrences(String text, String sub) {
+        int count = 0;
+        int index = 0;
+        while ((index = text.indexOf(sub, index)) != -1) {
+            count++;
+            index += sub.length();
+        }
+        return count;
     }
 }
