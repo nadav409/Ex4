@@ -1,8 +1,8 @@
 public class Ex2SheetTest {
     public static void main(String[] a) {
         Ex2Sheet test = new Ex2Sheet();
-        String formtest = "15+2>2+a1";
-        System.out.println(test.validConditionIf(formtest));
+        String iftest = "=if(5>2,=if(c8>2,5,4),2";
+        System.out.println(test.allCellsInIf(iftest));
 
     }
 }

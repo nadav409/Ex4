@@ -811,4 +811,32 @@ public class Ex2Sheet implements Sheet {
         }
         return count;
     }
+    public String allCellsInIf(String line) {
+        ArrayList<Index2D> cells = allCells(ifCondition(line));
+        StringBuilder result = new StringBuilder("[");
+
+        for (int i = 0; i < cells.size(); i++) {
+            result.append(cells.get(i).toString());
+            if (i < cells.size() - 1) {
+                result.append(",");
+            }
+        }
+        String True = ifTrue(line);
+        String False = ifFalse(line);
+
+        if (SCell.isFunction(True)) {
+            result.append(Range2D.AllCellsInRange(True));
+        }
+        else if (SCell.isIf(True)) {
+            result.append(allCellsInIf(True)); // Recursively handle nested IF
+        }
+        if (SCell.isFunction(False)) {
+            result.append(Range2D.AllCellsInRange(False));
+        }
+        else if (SCell.isIf(False)) {
+            result.append(allCellsInIf(True));
+        }
+        result.append("]");
+        return result.toString();
+    }
 }
