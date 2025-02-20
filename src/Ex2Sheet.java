@@ -811,7 +811,7 @@ public class Ex2Sheet implements Sheet {
         }
         return count;
     }
-    public String allCellsInIf(String line) {
+    public static String allCellsInIf(String line) {
         ArrayList<Index2D> cells = allCells(ifCondition(line));
         StringBuilder result = new StringBuilder("[");
 
