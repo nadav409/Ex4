@@ -701,6 +701,15 @@ public class Ex2Sheet implements Sheet {
         }
     }
     public boolean validIf(String _line) {
+        int count = 0;
+        for (int i = 0;i<_line.length();i++){
+            if(_line.charAt(i) == ','){
+                count ++;
+            }
+        }
+        if (count < 2){
+            return false;
+        }
         if (_line.isEmpty() || _line.isBlank()) {
             return false;
         }
