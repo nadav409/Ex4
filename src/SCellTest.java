@@ -69,13 +69,11 @@ public class SCellTest {
         assertEquals("=IF(A1>10,100,200)", cell.getData());
         assertEquals(Ex2Utils.IF, cell.getType());
     }
-
     @Test
     void testToString() {
         cell.setData("=A1+A2");
         assertEquals("=A1+A2", cell.toString());
     }
-
     @Test
     void testSetOrder() {
         cell.setOrder(5);
