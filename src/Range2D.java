@@ -67,6 +67,9 @@ public class Range2D {
         Double min = Double.MAX_VALUE;
         for (int i = 0; i < this.value.length; i++) {
             for (int j = 0; j < this.value[0].length; j++) {
+                if (value[i][j].equals("")){
+                    continue;
+                }
                 double current = Double.parseDouble(value[i][j]);
                 if (current < min) {
                     min = current;
@@ -80,6 +83,9 @@ public class Range2D {
         Double max = Double.MIN_VALUE;
         for (int i = 0; i < this.value.length; i++) {
             for (int j = 0; j < this.value[0].length; j++) {
+                if (value[i][j].equals("")){
+                    continue;
+                }
                 double current = Double.parseDouble(value[i][j]);
                 if (current > max) {
                     max = current;
@@ -93,6 +99,9 @@ public class Range2D {
         Double sum = 0.0;
         for (int i = 0; i < this.value.length; i++) {
             for (int j = 0; j < this.value[0].length; j++) {
+                if (value[i][j].equals("")){
+                    continue;
+                }
                 double current = Double.parseDouble(value[i][j]);
                 sum += current;
             }
@@ -122,7 +131,7 @@ public class Range2D {
         return CellsInRange.toString();
     }
     public static boolean BasicValidFunction(String line){
-        line.toLowerCase();
+        line = line.toLowerCase();
         if (line.charAt(0) != '='){
             return false;
         }
@@ -142,6 +151,9 @@ public class Range2D {
     public static boolean ValidFunction(String line) {
         int space = line.indexOf(" ");
         if (space != -1) {
+            return false;
+        }
+        if (!BasicValidFunction(line)){
             return false;
         }
         if (line.charAt(line.length() - 1) != ')') {
@@ -167,25 +179,25 @@ public class Range2D {
     }
 
     static boolean MinFunction(String line) {
-        line.toLowerCase();
+        line = line.toLowerCase();
         int indexEnd = line.indexOf("(");
         return line.substring(1, indexEnd).equals("min");
     }
 
     static boolean MaxFunction(String line) {
-        line.toLowerCase();
+        line = line.toLowerCase();
         int indexEnd = line.indexOf("(");
         return line.substring(1, indexEnd).equals("max");
     }
 
     static boolean SumFunction(String line) {
-        line.toLowerCase();
+        line = line.toLowerCase();
         int indexEnd = line.indexOf("(");
         return line.substring(1, indexEnd).equals("sum");
     }
 
     static boolean AverageFunction(String line) {
-        line.toLowerCase();
+        line = line.toLowerCase();
         int indexEnd = line.indexOf("(");
         return line.substring(1, indexEnd).equals("average");
     }
