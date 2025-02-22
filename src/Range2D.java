@@ -31,6 +31,10 @@ public class Range2D {
         return end;
     }
 
+    public String[][] getValue(){
+        return this.value;
+    }
+
     public ArrayList<Index2D> getcells() {
         ArrayList<Index2D> cells = new ArrayList<>();
         for (int row = start.getX(); row <= end.getX(); row++) {
@@ -172,31 +176,46 @@ public class Range2D {
         if (lastCell.getX() < firstCell.getX() || lastCell.getY() < firstCell.getY()) {
             return false;
         }
-        if (!firstCell.isValid() || !lastCell.isValid()) {
+        if (!Ex2Sheet.validCell(startRange) || !Ex2Sheet.validCell(endRange) ) {
             return false;
         }
         return true;
     }
+    public static boolean advnacedValidFunction(String line,Ex2Sheet t){
+        if (ValidFunction(line)){
+            int indexStart = line.indexOf("(");
+            int indexMiddle = line.indexOf(":");
+            int indexEnd = line.length() - 1;
+            String startRange = line.substring(indexStart + 1, indexMiddle);
+            String endRange = line.substring(indexMiddle + 1, indexEnd);
+            CellEntry firstCell = new CellEntry(startRange);
+            CellEntry lastCell = new CellEntry(endRange);
+            if (checkValidCellTypes(t,firstCell,lastCell)){
+                return true;
+            }
+        }
+        return false;
+    }
 
-    static boolean MinFunction(String line) {
+    public static boolean MinFunction(String line) {
         line = line.toLowerCase();
         int indexEnd = line.indexOf("(");
         return line.substring(1, indexEnd).equals("min");
     }
 
-    static boolean MaxFunction(String line) {
+   public static boolean MaxFunction(String line) {
         line = line.toLowerCase();
         int indexEnd = line.indexOf("(");
         return line.substring(1, indexEnd).equals("max");
     }
 
-    static boolean SumFunction(String line) {
+   public static boolean SumFunction(String line) {
         line = line.toLowerCase();
         int indexEnd = line.indexOf("(");
         return line.substring(1, indexEnd).equals("sum");
     }
 
-    static boolean AverageFunction(String line) {
+   public static boolean AverageFunction(String line) {
         line = line.toLowerCase();
         int indexEnd = line.indexOf("(");
         return line.substring(1, indexEnd).equals("average");
@@ -219,5 +238,20 @@ public class Range2D {
             return dd;
         }
     }
-
+    public static boolean checkValidCellTypes(Ex2Sheet t,CellEntry start,CellEntry end) {
+        int height = end.getY() - start.getY() + 1;
+        int width = end.getX() - start.getX() + 1;
+        String empty = "";
+        for (int i = 0, row = start.getY(); i < height; i++, row++) {
+            for (int j = 0, col = start.getX(); j < width; j++, col++) {
+                if (t.get(col, row).getData().equals(empty)){
+                    continue;
+                }
+                if(t.get(col,row).getType() == Ex2Utils.TEXT){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }

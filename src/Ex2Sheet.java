@@ -136,7 +136,7 @@ public class Ex2Sheet implements Sheet {
             for (int y = 0; y < height(); y = y + 1) {
                 Cell c = this.get(x, y);
                 int t = c.getType();
-                if (Ex2Utils.TEXT != t && Ex2Utils.IF != t) {
+                if (Ex2Utils.TEXT != t) {
                     ans[x][y] = -1;
                 }
             }
@@ -211,6 +211,10 @@ public class Ex2Sheet implements Sheet {
         int ans = 0;
         for (int i = 0; i < deps.size() & ans != -1; i = i + 1) {
             Index2D c = deps.get(i);
+            if (!(isIn(c.getX(), c.getY()))){
+                ans = 0;
+                return ans;
+            }
             int v = tmpTable[c.getX()][c.getY()];
             if (v == -1) {
                 ans = -1;
@@ -235,10 +239,11 @@ public class Ex2Sheet implements Sheet {
             data[x][y] = getDouble(c.toString());
             return line;
         }
-        if (type == Ex2Utils.FUNCTION) {
-            if (!Range2D.ValidFunction(line)) {
+        if (type == Ex2Utils.FUNCTION || type == Ex2Utils.FUNC_ERR_FORMAT) {
+            if (!Range2D.advnacedValidFunction(line,this)) {
                 c.setType(Ex2Utils.FUNC_ERR_FORMAT);
             } else {
+                c.setType(Ex2Utils.FUNCTION);
                 Range2D range = new Range2D(Range2D.findStartAndEndValid(line));
                 range.updateValue(this);
                 Double dd1 = range.evaluateFunction(line);
@@ -380,10 +385,13 @@ public class Ex2Sheet implements Sheet {
         return ans;
     }
 
-    public static ArrayList<Index2D> allCells(String line) {
+    public ArrayList<Index2D> allCells(String line) {
         ArrayList<Index2D> ans = new ArrayList<Index2D>();
         if (Range2D.ValidFunction(line)) {
             line = Range2D.AllCellsInRange(line);
+        }
+        if(validIf(line)){
+            line = allCellsInIf(line);
         }
         int i = 0;
         int len = line.length();
@@ -762,7 +770,7 @@ public class Ex2Sheet implements Sheet {
                 return false;
             }
         } else {
-            if (!isForm(leftFormula)) {
+            if (!isFormP(leftFormula)) {
                 return false;
             }
         }
@@ -773,7 +781,7 @@ public class Ex2Sheet implements Sheet {
             if (!isForm(rightFormula.substring(1))) {
                 return false;
             } else {
-                if (!isForm(rightFormula)) {
+                if (!isFormP(rightFormula)) {
                     return false;
                 }
             }
@@ -787,7 +795,7 @@ public class Ex2Sheet implements Sheet {
         if (line.charAt(0) != '='){
             return true;
         }
-        if (isForm(line) ){
+        if (isForm(line.substring(1)) ){
             return true;
         }
         if (isNumber(line)){
@@ -811,7 +819,7 @@ public class Ex2Sheet implements Sheet {
         }
         return count;
     }
-    public static String allCellsInIf(String line) {
+    public String allCellsInIf(String line) {
         ArrayList<Index2D> cells = allCells(ifCondition(line));
         StringBuilder result = new StringBuilder("[");
 
@@ -838,5 +846,28 @@ public class Ex2Sheet implements Sheet {
         }
         result.append("]");
         return result.toString();
+    }
+    public static boolean validCell(String a) {
+        if (a == null || a.isEmpty()){
+            return false;
+        }
+        a = a.toLowerCase();
+        if (a.length() == 2) {
+            if (a.charAt(0) >= 'a' && a.charAt(0) <= 'z' && a.charAt(1) >= '0' && a.charAt(1) <= '9') {
+                return true;
+            }
+        }
+        if (a.length() == 3) {
+            if (a.charAt(0) >= 'a' && a.charAt(0) <= 'z') {
+                String numPart = a.substring(1);
+                try {
+                    int num = Integer.parseInt(numPart);
+                    return num >= 0 && num <= 99;
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 }
