@@ -249,10 +249,11 @@ public class Ex2Sheet implements Sheet {
                 Double dd1 = range.evaluateFunction(line);
                 data[x][y] = dd1;
             }
-        } else if (type == Ex2Utils.IF) {
+        } else if (type == Ex2Utils.IF || type == Ex2Utils.IF_ERR_FORMAT || type == Ex2Utils.ERR_WRONG_IF) {
             if (!validIf(line)) {
                 c.setType(Ex2Utils.ERR_WRONG_IF);
             } else {
+                c.setType(Ex2Utils.IF);
                 Object ifResult = evaluateIf(line);
                 if (ifResult instanceof Double) {
                     data[x][y] = (Double) ifResult;
@@ -801,7 +802,7 @@ public class Ex2Sheet implements Sheet {
         if (isNumber(line)){
             return true;
         }
-        if (Range2D.ValidFunction(line)){
+        if (Range2D.advnacedValidFunction(line,this)){
             return true;
         }
         if (validIf(line)){
