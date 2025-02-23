@@ -8,8 +8,8 @@ public class Range2DTest {
 
     @BeforeEach
     void setUp() {
-        Index2D start = new CellEntry(0, 0); // "A0"
-        Index2D end = new CellEntry(2, 2);   // "C2"
+        Index2D start = new CellEntry(0, 0);
+        Index2D end = new CellEntry(2, 2);
         range = new Range2D(start, end);
     }
 
