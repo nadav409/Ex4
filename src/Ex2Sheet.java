@@ -48,7 +48,7 @@ public class Ex2Sheet implements Sheet {
                 return (String) ifResult;
             }
         }
-        if (t == Ex2Utils.ERR_WRONG_IF){
+        if (t == Ex2Utils.ERR_WRONG_IF) {
             ans = Ex2Utils.ERRWRONG_IF;
         }
         if (t == Ex2Utils.NUMBER || t == Ex2Utils.FORM || t == Ex2Utils.FUNCTION) {
@@ -176,11 +176,14 @@ public class Ex2Sheet implements Sheet {
         }
         while (myReader.hasNextLine()) {
             s0 = myReader.nextLine();
+            int xPart = s0.indexOf(",");
+            int yPart = s0.indexOf(",",xPart + 1);
+            String functionPart = s0.substring(yPart + 1);
             String[] s1 = s0.split(",");
             try {
                 int x = Ex2Sheet.getInteger(s1[0]);
                 int y = Ex2Sheet.getInteger(s1[1]);
-                sp.set(x, y, s1[2]);
+                sp.set(x, y, functionPart);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("Line: " + data + " is in the wrong format (should be x,y,cellData)");
@@ -211,7 +214,7 @@ public class Ex2Sheet implements Sheet {
         int ans = 0;
         for (int i = 0; i < deps.size() & ans != -1; i = i + 1) {
             Index2D c = deps.get(i);
-            if (!(isIn(c.getX(), c.getY()))){
+            if (!(isIn(c.getX(), c.getY()))) {
                 ans = 0;
                 return ans;
             }
@@ -240,7 +243,7 @@ public class Ex2Sheet implements Sheet {
             return line;
         }
         if (type == Ex2Utils.FUNCTION || type == Ex2Utils.FUNC_ERR_FORMAT) {
-            if (!Range2D.advnacedValidFunction(line,this)) {
+            if (!Range2D.advnacedValidFunction(line, this)) {
                 c.setType(Ex2Utils.FUNC_ERR_FORMAT);
             } else {
                 c.setType(Ex2Utils.FUNCTION);
@@ -391,7 +394,7 @@ public class Ex2Sheet implements Sheet {
         if (Range2D.ValidFunction(line)) {
             line = Range2D.AllCellsInRange(line);
         }
-        if(validIf(line)){
+        if (validIf(line)) {
             line = allCellsInIf(line);
         }
         int i = 0;
@@ -590,7 +593,7 @@ public class Ex2Sheet implements Sheet {
     }
 
     public static String ifCondition(String line) {
-        if(line.length()<12){
+        if (line.length() < 12) {
             return "";
         }
         int indexEnd = line.indexOf(",");
@@ -709,14 +712,15 @@ public class Ex2Sheet implements Sheet {
             return falseCondition;
         }
     }
+
     public boolean validIf(String _line) {
         int count = 0;
-        for (int i = 0;i<_line.length();i++){
-            if(_line.charAt(i) == ','){
-                count ++;
+        for (int i = 0; i < _line.length(); i++) {
+            if (_line.charAt(i) == ',') {
+                count++;
             }
         }
-        if (count < 2){
+        if (count < 2) {
             return false;
         }
         if (_line.isEmpty() || _line.isBlank()) {
@@ -728,19 +732,20 @@ public class Ex2Sheet implements Sheet {
         if (_line.contains(" ")) {
             return false;
         }
-        if(!validConditionIf(ifCondition(_line))){
+        if (!validConditionIf(ifCondition(_line))) {
             return false;
         }
-        if (!validIfTrueAndFalse(ifTrue(_line))){
+        if (!validIfTrueAndFalse(ifTrue(_line))) {
             return false;
         }
-        if (!validIfTrueAndFalse(ifFalse(_line))){
+        if (!validIfTrueAndFalse(ifFalse(_line))) {
             return false;
         }
         return true;
     }
+
     public boolean validConditionIf(String _line) {
-        if (_line.isEmpty()){
+        if (_line.isEmpty()) {
             return false;
         }
         int pass = 0;
@@ -775,7 +780,7 @@ public class Ex2Sheet implements Sheet {
                 return false;
             }
         }
-        if (rightFormula.isEmpty()){
+        if (rightFormula.isEmpty()) {
             return false;
         }
         if (rightFormula.charAt(0) == '=') {
@@ -789,23 +794,24 @@ public class Ex2Sheet implements Sheet {
         }
         return true;
     }
+
     public boolean validIfTrueAndFalse(String line) {
-        if (line.isEmpty()){
+        if (line.isEmpty()) {
             return false;
         }
-        if (line.charAt(0) != '='){
+        if (line.charAt(0) != '=') {
             return true;
         }
-        if (isForm(line.substring(1)) ){
+        if (isForm(line.substring(1))) {
             return true;
         }
-        if (isNumber(line)){
+        if (isNumber(line)) {
             return true;
         }
-        if (Range2D.advnacedValidFunction(line,this)){
+        if (Range2D.advnacedValidFunction(line, this)) {
             return true;
         }
-        if (validIf(line)){
+        if (validIf(line)) {
             return true;
         }
         return false;
@@ -820,6 +826,7 @@ public class Ex2Sheet implements Sheet {
         }
         return count;
     }
+
     public String allCellsInIf(String line) {
         ArrayList<Index2D> cells = allCells(ifCondition(line));
         StringBuilder result = new StringBuilder("[");
@@ -835,21 +842,20 @@ public class Ex2Sheet implements Sheet {
 
         if (SCell.isFunction(True)) {
             result.append(Range2D.AllCellsInRange(True));
-        }
-        else if (SCell.isIf(True)) {
+        } else if (SCell.isIf(True)) {
             result.append(allCellsInIf(True)); // Recursively handle nested IF
         }
         if (SCell.isFunction(False)) {
             result.append(Range2D.AllCellsInRange(False));
-        }
-        else if (SCell.isIf(False)) {
+        } else if (SCell.isIf(False)) {
             result.append(allCellsInIf(True));
         }
         result.append("]");
         return result.toString();
     }
+
     public static boolean validCell(String a) {
-        if (a == null || a.isEmpty()){
+        if (a == null || a.isEmpty()) {
             return false;
         }
         a = a.toLowerCase();
@@ -871,4 +877,28 @@ public class Ex2Sheet implements Sheet {
         }
         return false;
     }
+    public boolean advancedValidCell(String line) {
+        if (!validCell(line)) {
+            return false;
+        }
+        line = line.toUpperCase();
+        char col = line.charAt(0);  // First character is the column (A-Z)
+        String rowPart = line.substring(1);  // Extract numeric part
+
+        try {
+            int row = Integer.parseInt(rowPart);  // Convert the row part to an integer
+
+            // Ensure column and row are within valid spreadsheet dimensions
+            if (col - 'A' >= 0 && col - 'A' < this.width() && row >= 0 && row < this.height()) {
+                return true;
+            }
+        } catch (NumberFormatException e) {
+            return false;  // If parsing fails, it's not a valid cell
+        }
+
+        return false;
+    }
 }
+
+
+

@@ -190,6 +190,9 @@ public class Range2D {
             String endRange = line.substring(indexMiddle + 1, indexEnd);
             CellEntry firstCell = new CellEntry(startRange);
             CellEntry lastCell = new CellEntry(endRange);
+            if(!t.advancedValidCell(startRange) || !t.advancedValidCell(endRange)){
+                return false;
+            }
             if (checkValidCellTypes(t,firstCell,lastCell)){
                 return true;
             }
