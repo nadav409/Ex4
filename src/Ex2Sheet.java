@@ -90,7 +90,7 @@ public class Ex2Sheet implements Sheet {
     public void set(int x, int y, String s) {
         Cell c = new SCell(s);
         table[x][y] = c;
-        //  eval();
+          eval();
     }
 
     ///////////////////////////////////////////////////////////
@@ -622,7 +622,7 @@ public class Ex2Sheet implements Sheet {
             int split = condition.indexOf("!=");
             String form1 = condition.substring(0, split);
             String form2 = condition.substring(split + 2);
-            return computeFormP(form1) != computeFormP(form2);
+            return !computeFormP(form1).equals(computeFormP(form2));
         } else if (condition.contains(">")) {
             int split = condition.indexOf(">");
             String form1 = condition.substring(0, split);
