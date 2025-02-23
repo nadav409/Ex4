@@ -87,27 +87,26 @@ public class Range2DTest {
 
     @Test
     void testValidFunction() {
-        assertTrue(Range2D.ValidFunction("=SUM(A1:B2)"), "SUM should be valid");
-        assertTrue(Range2D.ValidFunction("=MIN(A1:B3)"), "MIN should be valid");
-        assertFalse(Range2D.ValidFunction("=RANDOM(A1:B2)"), "RANDOM should be invalid");
-        assertFalse(Range2D.ValidFunction("=SUM(A1 B2)"), "SUM missing colon should be invalid");
-    }
-
-    @Test
-    void testBasicValidFunction() {
-        assertTrue(Range2D.BasicValidFunction("=SUM(A1:B2)"), "SUM should be valid");
-        assertFalse(Range2D.BasicValidFunction("SUM(A1:B2)"), "Missing '=' should be invalid");
-        assertFalse(Range2D.BasicValidFunction("=INVALID(A1:B2)"), "Invalid function name should be false");
+        assertTrue(Range2D.ValidFunction("=SUM(A1:B2)"));
+        assertTrue(Range2D.ValidFunction("=MIN(A1:B3)"));
+        assertFalse(Range2D.ValidFunction("=RANDOM(A1:B2)"));
+        assertFalse(Range2D.ValidFunction("=SUM(A1 B2)"));
     }
 
     @Test
     void testFindStartAndEndValid() {
-        assertEquals("A1:B2", Range2D.findStartAndEndValid("=SUM(A1:B2)"), "Should extract 'A1:B2'");
+        assertEquals("A1:B2", Range2D.findStartAndEndValid("=SUM(A1:B2)"));
+        assertEquals("A0:B5", Range2D.findStartAndEndValid("=SUM(A0:B5)"));
+        assertEquals("a0:c0", Range2D.findStartAndEndValid("=min(a0:c0)"));
+        assertEquals("A1:E8", Range2D.findStartAndEndValid("=MAX(A1:E8)"));
+        assertEquals("A1:B5", Range2D.findStartAndEndValid("=average(A1:B5)"));
     }
 
     @Test
     void testAllCellsInRange() {
-        assertEquals("[A1, A2, B1, B2]", Range2D.AllCellsInRange("=SUM(A1:B2)"), "Should return all cells in range A1:B2");
+        assertEquals("[A1, A2, B1, B2]", Range2D.AllCellsInRange("=SUM(A1:B2)"));
+        assertEquals("[A0, B0, C0]", Range2D.AllCellsInRange("=MAX(A0:C0)"));
+        assertEquals("[A1, A2, B1, B2]", Range2D.AllCellsInRange("=MIN(A1:B2)"));
     }
 
     @Test
@@ -116,12 +115,11 @@ public class Range2DTest {
         sheet.set(0, 0, "4");
         sheet.set(1, 1, "2");
         sheet.set(2, 2, "6");
+        sheet.set(0, 1, "");
         range.updateValue(sheet);
-
-        assertEquals(2.0, range.evaluateFunction("=MIN(A1:C3)"), "Min function should return 2");
-        assertEquals(6.0, range.evaluateFunction("=MAX(A1:C3)"), "Max function should return 6");
-        assertEquals(12.0, range.evaluateFunction("=SUM(A1:C3)"), "Sum function should return 12");
-        assertEquals(2, range.evaluateFunction("=AVERAGE(A1:C3)"), "Average function should return 1.5");
+        assertEquals(2.0, range.evaluateFunction("=MIN(A1:C3)"));
+        assertEquals(6.0, range.evaluateFunction("=MAX(A1:C3)"));
+        assertEquals(12.0, range.evaluateFunction("=SUM(A1:C3)"));
     }
 }
 

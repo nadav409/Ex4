@@ -286,9 +286,4 @@ class Ex2SheetTest {
         assertEquals(0, sheet.countOccurrences("=A1+B1", "if"));
         assertEquals(3, sheet.countOccurrences("if if if", "if"));
     }
-
-
-
-
-
 }
