@@ -202,13 +202,15 @@ class Ex2SheetTest {
         sheet.set(1, 0, "=A0 + 5");
         sheet.set(2, 0, "=B0 * 2");
         sheet.set(3, 0, "=A0 + C0");
+        sheet.set(4, 0, "=max(a0:d0)");
+        sheet.set(5, 0, "=if(a0>5,=min(A0:E2),40)");
         int[][] depth3 = sheet.depth();
         assertEquals(0, depth3[0][0]);
         assertEquals(1, depth3[1][0]);
         assertEquals(2, depth3[2][0]);
         assertEquals(3, depth3[3][0]);
+        assertEquals(4, depth3[4][0]);
+        assertEquals(5, depth3[5][0]);
     }
-
-
 
 }
