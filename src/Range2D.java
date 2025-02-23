@@ -116,7 +116,8 @@ public class Range2D {
     public String averageValue() {
         String sum = this.sumValue();
         Double sum1 = Double.parseDouble(sum);
-        Double average = sum1 / (this.value.length + this.value[0].length);
+        ArrayList<String> cells = this.getCellNames();
+        Double average = sum1 / cells.size();
         return average.toString();
     }
 
@@ -257,4 +258,5 @@ public class Range2D {
         }
         return true;
     }
+
 }

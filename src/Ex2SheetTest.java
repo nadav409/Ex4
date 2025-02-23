@@ -13,10 +13,6 @@ class Ex2SheetTest {
         sheet = new Ex2Sheet(9, 17); // Initialize a 9x17 spreadsheet
     }
 
-    /**
-     * ✅ BASIC FUNCTIONALITY TESTS
-     **/
-
     @Test
     void testSetAndGetCell() {
         sheet.set(0, 0, "5");
@@ -36,10 +32,6 @@ class Ex2SheetTest {
         assertEquals("25.0", sheet.value(0, 4));
     }
 
-    /**
-     * ✅ IF FUNCTION TESTS
-     **/
-
     @Test
     void testIfCondition() {
         sheet.set(0, 0, "=if(5>2,10,20)");
@@ -50,59 +42,45 @@ class Ex2SheetTest {
         assertEquals("true", sheet.value(1, 0));
         sheet.set(1, 1, "=if(10!=10,1,2)");
         assertEquals("2.0", sheet.value(1, 1));
-    }
-
-    @Test
-    void testInvalidIfCondition() {
         sheet.set(0, 0, "=if(abc, 1, 2)");
-        assertEquals(Ex2Utils.ERR_WRONG_IF, sheet.value(0, 0));
+        assertEquals(Ex2Utils.ERRWRONG_IF, sheet.value(0, 0));
     }
-
-    /**
-     * ✅ CELL VALIDATION TESTS
-     **/
 
     @Test
     void testValidCell() {
         assertTrue(sheet.validCell("A1"));
+        assertTrue(sheet.validCell("a1"));
         assertTrue(sheet.validCell("I17"));
+        assertTrue(sheet.validCell("A98"));
+        assertTrue(sheet.validCell("Z64"));
+        assertFalse(sheet.validCell("A100"));
+        assertFalse(sheet.validCell("1A"));
+        assertFalse(sheet.validCell(""));
+        assertFalse(sheet.validCell(null));
+        assertFalse(sheet.validCell("naa34"));
     }
-
     @Test
-    void testInvalidCell() {
-        assertFalse(sheet.validCell("A100")); // Out of bounds
-        assertFalse(sheet.validCell("1A"));   // Wrong format
-        assertFalse(sheet.validCell(""));     // Empty input
-    }
-
-    @Test
-    void testAdvancedValidCellWithinBounds() {
+    void testAdvancedValidCell() {
         assertTrue(sheet.advancedValidCell("A1"));
-        assertTrue(sheet.advancedValidCell("H17"));
+        assertTrue(sheet.advancedValidCell("H16"));
+        assertFalse(sheet.advancedValidCell("J17"));
+        assertFalse(sheet.advancedValidCell("A18"));
+        assertFalse(sheet.advancedValidCell("AA1"));
     }
-
-    @Test
-    void testAdvancedValidCellOutOfBounds() {
-        assertFalse(sheet.advancedValidCell("J17")); // Out of width range
-        assertFalse(sheet.advancedValidCell("A18")); // Out of height range
-        assertFalse(sheet.advancedValidCell("AA1")); // Only single letter supported
-    }
-
-    /**
-     * ✅ FILE I/O TESTS
-     **/
 
     @Test
     void testSaveAndLoad() throws IOException {
         sheet.set(0, 0, "10");
         sheet.set(1, 1, "=5+5");
+        sheet.set(2, 2, "nadav");
 
         sheet.save("test_sheet.txt");
         Ex2Sheet loadedSheet = new Ex2Sheet();
         loadedSheet.load("test_sheet.txt");
 
-        assertEquals("10", loadedSheet.value(0, 0));
+        assertEquals("10.0", loadedSheet.value(0, 0));
         assertEquals("10.0", loadedSheet.value(1, 1));
+        assertEquals("nadav", loadedSheet.value(2, 2));
     }
 
     @Test
@@ -119,56 +97,118 @@ class Ex2SheetTest {
         });
     }
 
-    /**
-     * ✅ CIRCULAR REFERENCE TESTS
-     **/
-
     @Test
     void testCircularReference() {
-        sheet.set(0, 0, "=B1");
-        sheet.set(1, 0, "=A1");
+        sheet.set(0, 0, "=B0");
+        sheet.set(1, 0, "=A0");
         sheet.eval();
-
         assertEquals(Ex2Utils.ERR_CYCLE, sheet.value(0, 0));
         assertEquals(Ex2Utils.ERR_CYCLE, sheet.value(1, 0));
     }
-
-    /**
-     * ✅ FUNCTION TESTS
-     **/
 
     @Test
     void testSumFunction() {
         sheet.set(1, 0, "10");
         sheet.set(2, 0, "20");
-        sheet.set(3, 0, "=sum(B1:B2)");
-
+        sheet.set(3, 0, "=sum(B0:C0)");
         assertEquals("30.0", sheet.value(3, 0));
+        sheet.set(3,0,"string");
+        sheet.set(4, 0, "=sum(B0:D0)");
+        assertEquals(Ex2Utils.FUNC_ERR, sheet.value(4, 0));
+        sheet.set(3,0,"");
+        assertEquals("30.0", sheet.value(4, 0));
+        sheet.set(0, 0, "=sum(A1,b2)");
+        assertEquals(Ex2Utils.FUNC_ERR, sheet.value(0, 0));
     }
 
     @Test
     void testMaxFunction() {
         sheet.set(1, 0, "10");
         sheet.set(2, 0, "20");
-        sheet.set(3, 0, "=max(B1:B2)");
-
+        sheet.set(3, 0, "=Max(B0:C0)");
         assertEquals("20.0", sheet.value(3, 0));
-    }
-
-    @Test
-    void testInvalidFunction() {
-        sheet.set(0, 0, "=unknownFunction(A1)");
+        sheet.set(3,0,"string");
+        sheet.set(4, 0, "=max(B0:D0)");
+        assertEquals(Ex2Utils.FUNC_ERR, sheet.value(4, 0));
+        sheet.set(3,0,"");
+        assertEquals("20.0", sheet.value(4, 0));
+        sheet.set(0, 0, "=MAX(A1)");
         assertEquals(Ex2Utils.FUNC_ERR, sheet.value(0, 0));
     }
-
-    /**
-     * ✅ STRESS TEST
-     **/
+    @Test
+    void testMinFunction() {
+        sheet.set(1, 0, "10");
+        sheet.set(2, 0, "5");
+        sheet.set(3, 0, "=min(B0:C0)");
+        assertEquals("5.0", sheet.value(3, 0));
+        sheet.set(1, 0, "2");
+        assertEquals("2.0", sheet.value(3, 0));
+        sheet.set(1, 1, "=d0");
+        assertEquals("2.0", sheet.value(1, 1));
+    }
+    @Test
+    void testAverageFunction() {
+        sheet.set(0, 0, "10");
+        sheet.set(1, 0, "20");
+        sheet.set(3, 0, "=average(A0:B0)");
+        assertEquals("15.0", sheet.value(3, 0));
+        sheet.set(0, 0, "");
+        assertEquals("10.0", sheet.value(3, 0));
+    }
 
     @Test
-    void testLargeSheetPerformance() {
-        Ex2Sheet largeSheet = new Ex2Sheet(9, 17);
-        largeSheet.set(8, 16, "42");
-        assertEquals("42", largeSheet.value(8, 16));
+    void testEval() {
+        sheet.set(0, 0, "5");
+        assertEquals("5", sheet.eval(0, 0));
+        sheet.set(1, 1, "Hello");
+        assertEquals("Hello", sheet.eval(1, 1));
+        sheet.set(2, 2, "=5+3");
+        assertEquals("8.0", sheet.eval(2, 2));
+        assertEquals("", sheet.eval(3, 3));
+        sheet.set(4, 4, "=5++3");
+        assertEquals(null, sheet.eval(4, 4));
     }
+    @Test
+    void testIsForm() {
+        assertTrue(sheet.isForm("5+3"));
+        assertTrue(sheet.isForm("A1*2"));
+        assertTrue(sheet.isForm("(5+3)/2"));
+        assertTrue(sheet.isForm("5+3"));
+        assertTrue(sheet.isForm("A1*2"));
+        assertTrue(sheet.isForm("(5+3)/2"));
+        assertFalse(sheet.isForm("Hello"));
+        assertFalse(sheet.isForm("==5"));
+        assertFalse(sheet.isForm("Hello+3"));
+        assertFalse(sheet.isForm(""));
+        assertFalse(sheet.isForm(null));
+    }
+    @Test
+    void testDepth() {
+        sheet.set(0, 0, "5");
+        sheet.set(1, 0, "=A0+3");
+        sheet.set(2, 0, "=B0*2");
+        int[][] depth1 = sheet.depth();
+        assertEquals(0, depth1[0][0]);
+        assertEquals(1, depth1[1][0]);
+        assertEquals(2, depth1[2][0]);
+        sheet.set(0, 0, "=B0");
+        sheet.set(1, 0, "=C0");
+        sheet.set(2, 0, "=A0");
+        int[][] depth2 = sheet.depth();
+        assertEquals(-1, depth2[0][0]);
+        assertEquals(-1, depth2[1][0]);
+        assertEquals(-1, depth2[2][0]);
+        sheet.set(0, 0, "10");
+        sheet.set(1, 0, "=A0 + 5");
+        sheet.set(2, 0, "=B0 * 2");
+        sheet.set(3, 0, "=A0 + C0");
+        int[][] depth3 = sheet.depth();
+        assertEquals(0, depth3[0][0]);
+        assertEquals(1, depth3[1][0]);
+        assertEquals(2, depth3[2][0]);
+        assertEquals(3, depth3[3][0]);
+    }
+
+
+
 }
