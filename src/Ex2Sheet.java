@@ -93,8 +93,6 @@ public class Ex2Sheet implements Sheet {
           eval();
     }
 
-    ///////////////////////////////////////////////////////////
-
     @Override
     public void eval() {
         int[][] dd = depth();
@@ -370,7 +368,8 @@ public class Ex2Sheet implements Sheet {
         } else {
             if (isNumber(form)) {
                 ans = true;
-            } else {
+            }
+            else {
                 int ind = findLastOp(form);// bug
                 if (ind == 0) {  // the case of -1, or -(1+1)
                     char c1 = form.charAt(0);
@@ -429,12 +428,12 @@ public class Ex2Sheet implements Sheet {
         }
         CellEntry c = new CellEntry(form);
         if (c.isValid()) {
-
             return getDouble(eval(c.getX(), c.getY()));
         } else {
             if (isNumber(form)) {
                 ans = getDouble(form);
-            } else {
+            }
+            else {
                 int ind = findLastOp(form);
                 int opInd = opCode(form.substring(ind, ind + 1));
                 if (ind == 0) {  // the case of -1, or -(1+1)

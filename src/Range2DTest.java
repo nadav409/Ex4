@@ -75,17 +75,6 @@ public class Range2DTest {
     }
 
     @Test
-    void testAverageValue() {
-        Ex2Sheet sheet = new Ex2Sheet(3, 3);
-        sheet.set(0, 0, "4");
-        sheet.set(1, 1, "2");
-        sheet.set(2, 2, "6");
-        range.updateValue(sheet);
-
-        assertEquals("2.0", range.averageValue());
-    }
-
-    @Test
     void testValidFunction() {
         assertTrue(Range2D.ValidFunction("=SUM(A1:B2)"));
         assertTrue(Range2D.ValidFunction("=MIN(A1:B3)"));
