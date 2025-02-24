@@ -277,6 +277,9 @@ class Ex2SheetTest {
     }
     @Test
     void testValidIfCorrect() {
+        sheet.set(0, 1, "10");
+        sheet.set(1, 1, "1");
+        sheet.set(2, 1, "1");
         assertTrue(sheet.validIf("=if(A1>5,10,20)"));
         assertTrue(sheet.validIf("=if(B1==C1,yes,no)"));
         assertFalse(sheet.validIf("=IF(A1>5, 10)"));

@@ -112,6 +112,19 @@ public class Range2D {
         }
         return sum.toString();
     }
+    public String multiplyValue() {
+        Double multiply = 1.0;
+        for (int i = 0; i < this.value.length; i++) {
+            for (int j = 0; j < this.value[0].length; j++) {
+                if (value[i][j].equals("")){
+                    continue;
+                }
+                double current = Double.parseDouble(value[i][j]);
+                multiply *= current;
+            }
+        }
+        return multiply.toString();
+    }
 
     public String averageValue() {
         String sum = this.sumValue();
@@ -145,12 +158,12 @@ public class Range2D {
             return false;
         }
         String functionName = line.substring(1,indexEnd);
-        if (functionName.equals("min") || functionName.equals("max") || functionName.equals("sum") || functionName.equals("average")){
-            return true;
+        for (int i = 0;i<Ex2Utils.FUNCTIONS.length;i++){
+            if(functionName.equals(Ex2Utils.FUNCTIONS[i])){
+                return true;
+            }
         }
-        else {
-            return false;
-        }
+        return false;
     }
 
     public static boolean ValidFunction(String line) {
@@ -218,6 +231,11 @@ public class Range2D {
         int indexEnd = line.indexOf("(");
         return line.substring(1, indexEnd).equals("sum");
     }
+    public static boolean MultiplyFunction(String line) {
+        line = line.toLowerCase();
+        int indexEnd = line.indexOf("(");
+        return line.substring(1, indexEnd).equals("multiply");
+    }
 
    public static boolean AverageFunction(String line) {
         line = line.toLowerCase();
@@ -235,6 +253,10 @@ public class Range2D {
         }
         else if(Range2D.SumFunction(line)){
             Double dd = Double.parseDouble(this.sumValue());
+            return dd;
+        }
+        else if (Range2D.MultiplyFunction(line)){
+            Double dd = Double.parseDouble(this.multiplyValue());
             return dd;
         }
         else {

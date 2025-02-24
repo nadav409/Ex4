@@ -17,6 +17,6 @@ public class Ex2Utils {
 
     // ****** not implemented in Ex2!! ******
      //public static final String[] FUNCTIONS = {"if", "sin", "cos", "pow", "min", "max"};
-    public static final String[] FUNCTIONS = {"if", "sum", "average", "min", "max"};
+    public static final String[] FUNCTIONS = {"if", "sum", "average", "min", "max", "multiply"};
      public static final String[] B_OPS = {"<", ">", "==","!=", "<=", ">="};
 }

@@ -80,6 +80,7 @@ public class Range2DTest {
         assertTrue(Range2D.ValidFunction("=MIN(A1:B3)"));
         assertFalse(Range2D.ValidFunction("=RANDOM(A1:B2)"));
         assertFalse(Range2D.ValidFunction("=SUM(A1 B2)"));
+        assertFalse(Range2D.ValidFunction("=SUM("));
     }
 
     @Test
