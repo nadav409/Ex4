@@ -1,16 +1,29 @@
 import java.util.ArrayList;
-
+/**
+ * This class represents a 2D range in a spreadsheet.
+ * It stores a start and end index, and a table of values.
+ * It provides functions to get the min, max, sum, and other calculations in the range.
+ */
 public class Range2D {
     private Index2D start;
     private Index2D end;
     private String[][] value;
 
+    /**
+     * Creates a Range2D with given start and end points.
+     * @param start The starting index2D of the range.
+     * @param end The ending index2D of the range.
+     */
     public Range2D(Index2D start, Index2D end) {
         this.start = start;
         this.end = end;
-        this.value = new String[end.getY() - start.getY() + 1][end.getX() - start.getX() + 1];
+        this.value = new String[end.getY() - start.getY() + 1][end.getX() - start.getX() + 1];// Creates a 2D array to store values for the range
     }
 
+    /**
+     * Creates a Range2D from a string like "A1:B3".
+     * @param range A string that shows the range.
+     */
     public Range2D(String range) {
         int index = range.indexOf(":");
         String start = range.substring(0, index);
@@ -19,33 +32,47 @@ public class Range2D {
         Index2D e = new CellEntry(end);
         this.start = s;
         this.end = e;
-        this.value = new String[e.getY() - s.getY() + 1][e.getX() - s.getX() + 1];
-
+        this.value = new String[e.getY() - s.getY() + 1][e.getX() - s.getX() + 1];// Creates a 2D array to store values for the range
     }
 
+    /**
+     * @return The starting index2D of the range.
+     */
     public Index2D getStart() {
         return start;
     }
 
-    public Index2D getEnd() {
-        return end;
-    }
+    /**
+     * @return The ending index2D of the range.
+     */
+    public Index2D getEnd() {return end;}
 
+    /**
+     * @return The table of values in this range.
+     */
     public String[][] getValue(){
         return this.value;
     }
 
+    /**
+     * Gets all cells in the range.
+     * @return list of Index2D objects for all the cells.
+     */
     public ArrayList<Index2D> getcells() {
         ArrayList<Index2D> cells = new ArrayList<>();
         for (int row = start.getX(); row <= end.getX(); row++) {
             for (int col = start.getY(); col <= end.getY(); col++) {
-                String cellCurrent = Ex2Utils.ABC[row] + col;
+                String cellCurrent = Ex2Utils.ABC[row] + col;// Converts to cell name
                 cells.add(new CellEntry(cellCurrent));
             }
         }
         return cells;
     }
 
+    /**
+     * Gets all cell names (like "A1","B2") in the range.
+     * @return A list of cell names.
+     */
     public ArrayList<String> getCellNames() {
         ArrayList<String> cellNames = new ArrayList<>();
         for (int row = start.getX(); row <= end.getX(); row++) {
@@ -57,21 +84,29 @@ public class Range2D {
         return cellNames;
     }
 
+    /**
+     * Updates the values in the range from a table.
+     * @param table The Ex2Sheet object that has the data.
+     */
     public void updateValue(Ex2Sheet table) {
         int height = end.getY() - start.getY() + 1;
         int width = end.getX() - start.getX() + 1;
         for (int i = 0, row = start.getY(); i < height; i++, row++) {
             for (int j = 0, col = start.getX(); j < width; j++, col++) {
-                this.value[i][j] = table.eval(col, row);
+                this.value[i][j] = table.eval(col, row);// Fills value array from table
             }
         }
     }
 
+    /**
+     * Finds the smallest number in the range.
+     * @return The smallest value as a string.
+     */
     public String minValue() {
         Double min = Double.MAX_VALUE;
         for (int i = 0; i < this.value.length; i++) {
             for (int j = 0; j < this.value[0].length; j++) {
-                if (value[i][j].equals("")){
+                if (value[i][j].equals("")){// Skips empty values
                     continue;
                 }
                 double current = Double.parseDouble(value[i][j]);
