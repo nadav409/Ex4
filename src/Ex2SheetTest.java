@@ -139,6 +139,7 @@ class Ex2SheetTest {
 
     @Test
     void testMinFunction() {
+        assertEquals("", sheet.value(3, 0));
         sheet.set(1, 0, "10");
         sheet.set(2, 0, "5");
         sheet.set(3, 0, "=min(B0:C0)");
@@ -147,6 +148,9 @@ class Ex2SheetTest {
         assertEquals("2.0", sheet.value(3, 0));
         sheet.set(1, 1, "=d0");
         assertEquals("2.0", sheet.value(1, 1));
+        sheet.set(1, 0, "1");
+        assertEquals("1.0", sheet.value(3, 0));
+        assertEquals("1.0", sheet.value(1, 1));
     }
 
     @Test
