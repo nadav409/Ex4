@@ -90,7 +90,7 @@ public class Ex2Sheet implements Sheet {
     public void set(int x, int y, String s) {
         Cell c = new SCell(s);
         table[x][y] = c;
-          eval();
+        eval();
     }
 
     @Override
@@ -175,7 +175,7 @@ public class Ex2Sheet implements Sheet {
         while (myReader.hasNextLine()) {
             s0 = myReader.nextLine();
             int xPart = s0.indexOf(",");
-            int yPart = s0.indexOf(",",xPart + 1);
+            int yPart = s0.indexOf(",", xPart + 1);
             String functionPart = s0.substring(yPart + 1);
             String[] s1 = s0.split(",");
             try {
@@ -368,8 +368,7 @@ public class Ex2Sheet implements Sheet {
         } else {
             if (isNumber(form)) {
                 ans = true;
-            }
-            else {
+            } else {
                 int ind = findLastOp(form);// bug
                 if (ind == 0) {  // the case of -1, or -(1+1)
                     char c1 = form.charAt(0);
@@ -432,8 +431,7 @@ public class Ex2Sheet implements Sheet {
         } else {
             if (isNumber(form)) {
                 ans = getDouble(form);
-            }
-            else {
+            } else {
                 int ind = findLastOp(form);
                 int opInd = opCode(form.substring(ind, ind + 1));
                 if (ind == 0) {  // the case of -1, or -(1+1)
@@ -713,16 +711,27 @@ public class Ex2Sheet implements Sheet {
     }
 
     public boolean validIf(String _line) {
+        if (_line.isEmpty() || _line.isBlank()) {
+            return false;
+        }
         int count = 0;
+        int open = 0;
+        int close = 0;
         for (int i = 0; i < _line.length(); i++) {
             if (_line.charAt(i) == ',') {
                 count++;
+            }
+            if (_line.charAt(i) == '(') {
+                open++;
+            }
+            if (_line.charAt(i) == ')') {
+                close++;
             }
         }
         if (count < 2) {
             return false;
         }
-        if (_line.isEmpty() || _line.isBlank()) {
+        if (open != close) {
             return false;
         }
         if (ifTrue(_line).equals(_line) || ifFalse(_line).equals(_line)) {
@@ -774,8 +783,24 @@ public class Ex2Sheet implements Sheet {
             if (!isForm(leftFormula.substring(1))) {
                 return false;
             }
+            try {
+                Double leftF = computeFormP(leftFormula.substring(1));
+                if (leftF == null){
+                    return false;
+                }
+            } catch (Exception L) {
+                return false;
+            }
         } else {
-            if (!isFormP(leftFormula)) {
+            if (!isForm(leftFormula)) {
+                return false;
+            }
+            try {
+                Double leftF = computeFormP(leftFormula);
+                if (leftF == null){
+                    return false;
+                }
+            } catch (Exception L) {
                 return false;
             }
         }
@@ -785,10 +810,27 @@ public class Ex2Sheet implements Sheet {
         if (rightFormula.charAt(0) == '=') {
             if (!isForm(rightFormula.substring(1))) {
                 return false;
-            } else {
-                if (!isFormP(rightFormula)) {
+            }
+            try {
+                Double rightF = computeFormP(rightFormula.substring(1));
+                if (rightF == null){
                     return false;
                 }
+            } catch (Exception R) {
+                return false;
+            }
+        }
+        else {
+            if (!isForm(rightFormula)){
+                return false;
+            }
+            try {
+                Double rightF = computeFormP(rightFormula);
+                if (rightF == null){
+                    return false;
+                }
+            } catch (Exception R) {
+                return false;
             }
         }
         return true;
@@ -876,6 +918,7 @@ public class Ex2Sheet implements Sheet {
         }
         return false;
     }
+
     public boolean advancedValidCell(String line) {
         if (!validCell(line)) {
             return false;
