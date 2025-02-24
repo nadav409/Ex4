@@ -123,6 +123,9 @@ public class Range2D {
                 multiply *= current;
             }
         }
+        if (multiply == -0.0){
+            multiply = 0.0;
+        }
         return multiply.toString();
     }
 

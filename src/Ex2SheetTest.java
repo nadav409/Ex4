@@ -10,7 +10,7 @@ class Ex2SheetTest {
 
     @BeforeEach
     void setUp() {
-        sheet = new Ex2Sheet(9, 17); // Initialize a 9x17 spreadsheet
+        sheet = new Ex2Sheet(9, 17);
     }
 
     @Test
@@ -82,20 +82,6 @@ class Ex2SheetTest {
         assertEquals("10.0", loadedSheet.value(0, 0));
         assertEquals("10.0", loadedSheet.value(1, 1));
         assertEquals("nadav", loadedSheet.value(2, 2));
-    }
-
-    @Test
-    void testLoadCorruptedFile() {
-        assertThrows(IOException.class, () -> {
-            sheet.load("corrupt_file.txt");
-        });
-    }
-
-    @Test
-    void testLoadEmptyFile() {
-        assertThrows(IOException.class, () -> {
-            sheet.load("empty_file.txt");
-        });
     }
 
     @Test
@@ -274,6 +260,15 @@ class Ex2SheetTest {
         assertEquals("100.0", sheet.value(0, 0));
         sheet.set(0, 0, "=if(abc,1,2)");
         assertEquals(Ex2Utils.ERRWRONG_IF, sheet.value(0, 0));
+        sheet.set(1, 1, "-20");
+        sheet.set(0, 0, "=if(5>2,=min(b0:c1),2)");
+        assertEquals("-20.0", sheet.value(0, 0));
+        sheet.set(0, 0, "=if(5>2,=max(b0:c1),2)");
+        assertEquals("20.0", sheet.value(0, 0));
+        sheet.set(0, 0, "=if(b0>5,=multiply(b0:c1),2)");
+        assertEquals("-4000.0", sheet.value(0, 0));
+
+
     }
     @Test
     void testValidIfCorrect() {

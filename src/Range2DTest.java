@@ -49,7 +49,19 @@ public class Range2DTest {
         sheet.set(2, 2, "8");
         range.updateValue(sheet);
 
-        assertEquals("2.0", range.minValue(), "Min value should be 2.0");
+        assertEquals("2.0", range.minValue());
+    }
+    @Test
+    void testMultiplyValue() {
+        Ex2Sheet sheet = new Ex2Sheet(3, 3);
+        sheet.set(0, 0, "=2+3");
+        sheet.set(1, 1, "2");
+        sheet.set(2, 2, "8");
+        range.updateValue(sheet);
+        assertEquals("80.0", range.multiplyValue());
+        sheet.set(1, 1, "-2");
+        range.updateValue(sheet);
+        assertEquals("-80.0", range.multiplyValue());
     }
 
     @Test
@@ -60,7 +72,7 @@ public class Range2DTest {
         sheet.set(2, 2, "8");
         range.updateValue(sheet);
 
-        assertEquals("8.0", range.maxValue(), "Max value should be 8.0");
+        assertEquals("8.0", range.maxValue());
     }
 
     @Test

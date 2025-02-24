@@ -34,8 +34,7 @@ public class Ex2Sheet implements Sheet {
         if (t == Ex2Utils.ERR_CYCLE_FORM) {
             ans = Ex2Utils.ERR_CYCLE;
             c.setOrder(-1);
-        } // BUG 345
-        //  if(t==Ex2Utils.ERR_CYCLE_FORM) {ans = "ERR_CYCLE!";}
+        }
         if (t == Ex2Utils.FUNC_ERR_FORMAT) {
             ans = Ex2Utils.FUNC_ERR;
         }
