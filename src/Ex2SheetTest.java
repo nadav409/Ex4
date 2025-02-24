@@ -30,6 +30,11 @@ class Ex2SheetTest {
         assertEquals("5.0", sheet.value(0, 3));
         sheet.set(0, 4, "=a3*5");
         assertEquals("25.0", sheet.value(0, 4));
+        sheet.set(1, 2, "=multiply(a0:a1)");
+        assertEquals("128.0", sheet.value(1, 2));
+        sheet.set(1, 3, "=max(a0,a1)");
+        assertEquals(Ex2Utils.FUNC_ERR, sheet.value(1, 3));
+
     }
 
     @Test
@@ -60,6 +65,8 @@ class Ex2SheetTest {
         sheet.set(0, 0, "10");
         sheet.set(1, 1, "=5+5");
         sheet.set(2, 2, "nadav");
+        sheet.set(2, 3, "=if(a0>5,=sum(a0:b1),40)");
+
 
         sheet.save("test_sheet.txt");
         Ex2Sheet loadedSheet = new Ex2Sheet();
@@ -68,6 +75,7 @@ class Ex2SheetTest {
         assertEquals("10.0", loadedSheet.value(0, 0));
         assertEquals("10.0", loadedSheet.value(1, 1));
         assertEquals("nadav", loadedSheet.value(2, 2));
+        assertEquals("20.0", loadedSheet.value(2, 3));
     }
 
     @Test
@@ -267,6 +275,8 @@ class Ex2SheetTest {
         assertFalse(sheet.validIf("=if(B1==C1,yes ,no)"));
         assertFalse(sheet.validIf("=if(B1==C1,=2>5,no)"));
         assertFalse(sheet.validIf("=if(d1>2,2,no)"));
+        assertFalse(sheet.validIf("=if(3>2,=max(,5)"));
+        assertTrue(sheet.validIf("=if(3>2,=min(a0:b1),5)"));
 
     }
     @Test
