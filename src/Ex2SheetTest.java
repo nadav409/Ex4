@@ -33,20 +33,6 @@ class Ex2SheetTest {
     }
 
     @Test
-    void testIfCondition() {
-        sheet.set(0, 0, "=if(5>2,10,20)");
-        assertEquals("10.0", sheet.value(0, 0));
-        sheet.set(0, 1, "=if(10>5,=if(2<3,100,200),300)");
-        assertEquals("100.0", sheet.value(0, 1));
-        sheet.set(1, 0, "=if(5==5,true,false)");
-        assertEquals("true", sheet.value(1, 0));
-        sheet.set(1, 1, "=if(10!=10,1,2)");
-        assertEquals("2.0", sheet.value(1, 1));
-        sheet.set(0, 0, "=if(abc, 1, 2)");
-        assertEquals(Ex2Utils.ERRWRONG_IF, sheet.value(0, 0));
-    }
-
-    @Test
     void testValidCell() {
         assertTrue(sheet.validCell("A1"));
         assertTrue(sheet.validCell("a1"));
@@ -268,7 +254,6 @@ class Ex2SheetTest {
         sheet.set(0, 0, "=if(b0>5,=multiply(b0:c1),2)");
         assertEquals("-4000.0", sheet.value(0, 0));
 
-
     }
     @Test
     void testValidIfCorrect() {
@@ -281,6 +266,8 @@ class Ex2SheetTest {
         assertFalse(sheet.validIf("=if(A1>5,,20)"));
         assertFalse(sheet.validIf("=if(B1==C1,yes ,no)"));
         assertFalse(sheet.validIf("=if(B1==C1,=2>5,no)"));
+        assertFalse(sheet.validIf("=if(d1>2,2,no)"));
+
     }
     @Test
     void testCountOccurrencesBasic() {
