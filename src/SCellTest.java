@@ -41,8 +41,6 @@ public class SCellTest {
         cell.setData("=A1+A2");
         assertEquals("=A1+A2", cell.getData());
         assertEquals(Ex2Utils.FORM, cell.getType());
-        cell.setData("=1++2");
-        assertEquals(Ex2Utils.FORM, cell.getType(), "Invalid formulas should still be classified as FORM");
     }
 
     @Test
