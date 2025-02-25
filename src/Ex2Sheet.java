@@ -5,12 +5,18 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * The documentation of this class was removed as of Ex4...
+ * This class represents a spreadsheet that holds a table of cells.
+ * It allows setting and retrieving values, evaluating formulas, evaluating functions, and loading/saving data.
  */
 public class Ex2Sheet implements Sheet {
     private Cell[][] table;
     private Double[][] data;
 
+    /**
+     * Creates a spreadsheet with given width and height.
+     * @param x The number of columns.
+     * @param y The number of rows.
+     */
     public Ex2Sheet(int x, int y) {
         table = new SCell[x][y];
         for (int i = 0; i < x; i = i + 1) {
@@ -21,10 +27,21 @@ public class Ex2Sheet implements Sheet {
         eval();
     }
 
+    /**
+     * Creates a spreadsheet with default width and height.
+     * The dimensions are taken from Ex2Utils.
+     */
+
     public Ex2Sheet() {
         this(Ex2Utils.WIDTH, Ex2Utils.HEIGHT);
     }
 
+    /**
+     * Gets the value stored in a specific cell.
+     * @param x The column index.
+     * @param y The row index.
+     * @return The string representation of the cell's value.
+     */
     @Override
     public String value(int x, int y) {
         String ans = "";
@@ -59,11 +76,22 @@ public class Ex2Sheet implements Sheet {
         return ans;
     }
 
+    /**
+     * Gets a cell object at a specific location.
+     * @param x The column index.
+     * @param y The row index.
+     * @return The Cell object.
+     */
     @Override
     public Cell get(int x, int y) {
         return table[x][y];
     }
 
+    /**
+     * Gets a cell using its string coordinates (e.g., "A1").
+     * @param cords The string representation of the cell coordinates.
+     * @return The Cell object if found, otherwise null.
+     */
     @Override
     public Cell get(String cords) {
         Cell ans = null;
@@ -75,41 +103,59 @@ public class Ex2Sheet implements Sheet {
         return ans;
     }
 
+    /**
+     * @return The width (number of columns) of the spreadsheet.
+     */
     @Override
     public int width() {
         return table.length;
     }
 
+    /**
+     * @return The height (number of rows) of the spreadsheet.
+     */
     @Override
     public int height() {
         return table[0].length;
     }
 
+    /**
+     * Sets a value in the spreadsheet at the specified location.
+     * @param x The column index.
+     * @param y The row index.
+     * @param s The value to set in the cell.
+     */
     @Override
     public void set(int x, int y, String s) {
         Cell c = new SCell(s);
         table[x][y] = c;
-        eval();
+        eval();// Recalculate all values after setting
     }
 
+    /**
+     * Evaluates all cells, recalculating formulas and updating values in the table.
+     */
     @Override
     public void eval() {
-        int[][] dd = depth();
+        int[][] dd = depth(); // Computes the dependency depth for each cell
         data = new Double[width()][height()];
         for (int x = 0; x < width(); x = x + 1) {
             for (int y = 0; y < height(); y = y + 1) {
                 Cell c = table[x][y];
+                // If the cell is not a text type and is computable, evaluate its value
                 if (dd[x][y] != -1 && c != null && (c.getType() != Ex2Utils.TEXT)) {
                     String res = eval(x, y);
                     Double d = getDouble(res);
+                    // If the result is invalid, mark it as a formula error
                     if (d == null) {
                         if (c.getType() != Ex2Utils.FUNC_ERR_FORMAT && c.getType() != Ex2Utils.IF_ERR_FORMAT && c.getType() != Ex2Utils.IF && c.getType() != Ex2Utils.ERR_WRONG_IF) {
                             c.setType(Ex2Utils.ERR_FORM_FORMAT);
                         }
                     } else {
-                        data[x][y] = d;
+                        data[x][y] = d;// Stores the computed numeric value
                     }
                 }
+                // If the cell is part of a circular dependency
                 if (dd[x][y] == -1) {
                     c.setType(Ex2Utils.ERR_CYCLE_FORM);
                 }
@@ -117,6 +163,12 @@ public class Ex2Sheet implements Sheet {
         }
     }
 
+    /**
+     * Checks whether the given cell coordinates are within the spreadsheet bounds.
+     * @param xx The column index.
+     * @param yy The row index.
+     * @return True if inside the spreadsheet, otherwise false.
+     */
     @Override
     public boolean isIn(int xx, int yy) {
         boolean ans = true;
@@ -126,6 +178,12 @@ public class Ex2Sheet implements Sheet {
         return ans;
     }
 
+    /**
+     * Computes the dependency depth for each cell.
+     * This function determines the order in which cells should be computed,
+     * ensuring that dependent cells are evaluated only after their dependencies.
+     * @return A 2D array representing dependency of the cells.
+     */
     @Override
     public int[][] depth() {
         int[][] ans = new int[width()][height()];
@@ -133,26 +191,26 @@ public class Ex2Sheet implements Sheet {
             for (int y = 0; y < height(); y = y + 1) {
                 Cell c = this.get(x, y);
                 int t = c.getType();
-                if (Ex2Utils.TEXT != t) {
+                if (Ex2Utils.TEXT != t) {// text cells are not computable.
                     ans[x][y] = -1;
                 }
             }
         }
-        int count = 0, all = width() * height();
+        int count = 0, all = width() * height();// Track computed cells
         boolean changed = true;
+        // process cells until no further changes occur or the maximum depth is reached in this spreadsheet.
         while (changed && count < all) {
             changed = false;
             for (int x = 0; x < width(); x = x + 1) {
                 for (int y = 0; y < height(); y = y + 1) {
-                    if (ans[x][y] == -1) {
+                    if (ans[x][y] == -1) {// Process only uncomputed cells
                         Cell c = this.get(x, y);
-                        //   ArrayList<Coord> deps = allCells(c.toString());
-                        ArrayList<Index2D> deps = allCells(c.getData());
-                        int dd = canBeComputed(deps, ans);
-                        if (dd != -1) {
+                        ArrayList<Index2D> deps = allCells(c.getData());// Identify and collect the dependent cells required for computation."
+                        int dd = canBeComputed(deps, ans);// Determine if computation is possible
+                        if (dd != -1) {// If computation is possible, assign depth level
                             ans[x][y] = dd;
-                            count++;
-                            changed = true;
+                            count++;// Increase computed cell count
+                            changed = true;// Mark that a change occurred
                         }
                     }
                 }
@@ -161,6 +219,12 @@ public class Ex2Sheet implements Sheet {
         return ans;
     }
 
+    /**
+     * Loads spreadsheet data from a file/
+     * It reads the file line by line and extracts cell coordinates and values.
+     * @param fileName The name of the file to load data from.
+     * @throws IOException If an error occurs while reading the file.
+     */
     @Override
     public void load(String fileName) throws IOException {
         Ex2Sheet sp = new Ex2Sheet();
@@ -176,11 +240,11 @@ public class Ex2Sheet implements Sheet {
             int xPart = s0.indexOf(",");
             int yPart = s0.indexOf(",", xPart + 1);
             String functionPart = s0.substring(yPart + 1);
-            String[] s1 = s0.split(",");
+            String[] s1 = s0.split(",");// Split the line into parts
             try {
                 int x = Ex2Sheet.getInteger(s1[0]);
                 int y = Ex2Sheet.getInteger(s1[1]);
-                sp.set(x, y, functionPart);
+                sp.set(x, y, functionPart);// Set value in the spreadsheet
             } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("Line: " + data + " is in the wrong format (should be x,y,cellData)");
@@ -191,6 +255,12 @@ public class Ex2Sheet implements Sheet {
         data = sp.data;
     }
 
+    /**
+     * Saves the current spreadsheet data to a file.
+     * It writes the table's content to a file line by line.
+     * @param fileName The name of the file where data should be saved.
+     * @throws IOException If an error occurs while writing to the file.
+     */
     @Override
     public void save(String fileName) throws IOException {
         FileWriter myWriter = new FileWriter(fileName);
@@ -207,11 +277,18 @@ public class Ex2Sheet implements Sheet {
         myWriter.close();
     }
 
+    /**
+     * Checks if the given dependencies allow a cell to be computed.
+     * It verifies if all dependent cells have already been computed.
+     "@param deps A list of cells that must be computed before this cell.
+     * @param tmpTable A temporary table tracking computed cells.
+     * @return The computation depth if valid, otherwise -1.
+     */
     private int canBeComputed(ArrayList<Index2D> deps, int[][] tmpTable) {
         int ans = 0;
         for (int i = 0; i < deps.size() & ans != -1; i = i + 1) {
             Index2D c = deps.get(i);
-            if (!(isIn(c.getX(), c.getY()))) {
+            if (!(isIn(c.getX(), c.getY()))) {// Check if cell is within bounds
                 ans = 0;
                 return ans;
             }
@@ -220,16 +297,25 @@ public class Ex2Sheet implements Sheet {
                 ans = -1;
             } // not yet computed;
             else {
-                ans = Math.max(ans, v + 1);
+                ans = Math.max(ans, v + 1);// Update depth level
             }
         }
         return ans;
     }
 
+    /**
+     * Evaluates a specific cell at the given coordinates.
+     * It processes the cell's value, determines its type (text, number, formula, function, ...),
+     * and computes the appropriate result.
+     * @param x The column index of the cell.
+     * @param y The row index of the cell.
+     * @return The evaluated value of the cell as a string.
+     */
+
     @Override
     public String eval(int x, int y) {
         Cell c = table[x][y];
-        String line = c.getData();
+        String line = c.getData();// Get the data stored in the cell
         if (c == null || c.getType() == Ex2Utils.TEXT) {
             data[x][y] = null;
             return line;
@@ -280,7 +366,12 @@ public class Ex2Sheet implements Sheet {
         return ans;
     }
 
-    /////////////////////////////////////////////////
+    /**
+     * Converts a string representation of a number to an Integer.
+     * Returns null if the string is not a valid integer.
+     * @param line The string to be converted.
+     * @return The Integer value of the string, or null if invalid.
+     */
     public static Integer getInteger(String line) {
         Integer ans = null;
         try {
@@ -291,6 +382,12 @@ public class Ex2Sheet implements Sheet {
         return ans;
     }
 
+    /**
+     * Converts a string representation of a number to a Double.
+     * Returns null if the string is not a valid number.
+     * @param line The string to be converted.
+     * @return The Double value of the string, or null if invalid.
+     */
     public static Double getDouble(String line) {
         Double ans = null;
         try {
@@ -301,6 +398,11 @@ public class Ex2Sheet implements Sheet {
         return ans;
     }
 
+    /**
+     * Removes all spaces from the input string.
+     * @param s The input string.
+     * @return The string without spaces.
+     */
     public static String removeSpaces(String s) {
         String ans = null;
         if (s != null) {
@@ -313,25 +415,12 @@ public class Ex2Sheet implements Sheet {
         return ans;
     }
 
-    public int checkType(String line) {
-        line = removeSpaces(line);
-        int ans = Ex2Utils.TEXT;
-        double d = getDouble(line);
-        if (d > Double.MIN_VALUE) {
-            ans = Ex2Utils.NUMBER;
-        } else {
-            if (line.charAt(0) == '=') {
-                ans = Ex2Utils.ERR_FORM_FORMAT;
-                int type = -1;
-                String s = line.substring(1);
-                if (isForm(s)) {
-                    ans = Ex2Utils.FORM;
-                }
-            }
-        }
-        return ans;
-    }
-
+    /**
+     * Checks if a given string is a valid formula.
+     * It removes spaces and verifies the format using `isFormP`.
+     * @param form The formula string to check.
+     * @return True if the string is a valid formula, otherwise false.
+     */
     public boolean isForm(String form) {
         boolean ans = false;
         if (form != null) {
@@ -345,6 +434,13 @@ public class Ex2Sheet implements Sheet {
         return ans;
     }
 
+    /**
+     * Computes the result of a formula stored in a specific cell.
+     * Removes the '=' symbol and validates the formula before computation.
+     * @param x The column index of the cell.
+     * @param y The row index of the cell.
+     * @return The computed value as a Double, or null if invalid.
+     */
     private Double computeForm(int x, int y) {
         Double ans = null;
         String form = table[x][y].getData();
@@ -356,43 +452,53 @@ public class Ex2Sheet implements Sheet {
         return ans;
     }
 
+    /**
+     * Checks if a given string is a properly formatted formula.
+     * @param form The formula string to validate.
+     * @return True if the string represents a valid formula, otherwise false.
+     */
     private boolean isFormP(String form) {
         boolean ans = false;
         while (canRemoveB(form)) {
             form = removeB(form);
         }
         Index2D c = new CellEntry(form);
-        if (isIn(c.getX(), c.getY())) {
+        if (isIn(c.getX(), c.getY())) {// Check if it's a valid cell reference
             ans = true;
         } else {
-            if (isNumber(form)) {
+            if (isNumber(form)) {// Check if it's a valid number
                 ans = true;
             } else {
-                int ind = findLastOp(form);// bug
+                int ind = findLastOp(form);// Find the last operator position
                 if (ind == 0) {  // the case of -1, or -(1+1)
                     char c1 = form.charAt(0);
                     if (c1 == '-' | c1 == '+') {
-                        ans = isFormP(form.substring(1));
+                        ans = isFormP(form.substring(1));// Recursively check if the remaining expression is a valid formula.
                     } else {
                         ans = false;
                     }
                 } else {
                     String f1 = form.substring(0, ind);
                     String f2 = form.substring(ind + 1);
-                    ans = isFormP(f1) && isFormP(f2);
+                    ans = isFormP(f1) && isFormP(f2);// Ensure both parts of the expression are valid
                 }
             }
         }
         return ans;
     }
 
+    /**
+     * Extracts all referenced cells from a given formula.
+     * @param line The formula string.
+     * @return A list of Index2D objects representing all referenced cells.
+     */
     public ArrayList<Index2D> allCells(String line) {
         ArrayList<Index2D> ans = new ArrayList<Index2D>();
         if (Range2D.ValidFunction(line)) {
-            line = Range2D.AllCellsInRange(line);
+            line = Range2D.AllCellsInRange(line);// Convert function calls to all the cells int the range.
         }
         if (validIf(line)) {
-            line = allCellsInIf(line);
+            line = allCellsInIf(line);// Convert If calls to all the cells in the If statements.
         }
         int i = 0;
         int len = line.length();
@@ -403,11 +509,11 @@ public class Ex2Sheet implements Sheet {
             String s3 = line.substring(i, m3);
             Index2D sc2 = new CellEntry(s2);
             Index2D sc3 = new CellEntry(s3);
-            if (sc3.isValid()) {
+            if (sc3.isValid()) {// Check if a 3-character reference is valid
                 ans.add(sc3);
                 i += 3;
             } else {
-                if (sc2.isValid()) {
+                if (sc2.isValid()) {// Check if a 2-character reference is valid
                     ans.add(sc2);
                     i += 2;
                 } else {
@@ -419,6 +525,11 @@ public class Ex2Sheet implements Sheet {
         return ans;
     }
 
+    /**
+     * Computes the result of a mathematical formula recursively.
+     * @param form The formula string to evaluate.
+     * @return The computed result as a Double, or null if the formula is invalid.
+     */
     private Double computeFormP(String form) {
         Double ans = null;
         while (canRemoveB(form)) {
@@ -426,19 +537,19 @@ public class Ex2Sheet implements Sheet {
         }
         CellEntry c = new CellEntry(form);
         if (c.isValid()) {
-            return getDouble(eval(c.getX(), c.getY()));
+            return getDouble(eval(c.getX(), c.getY()));// Evaluate referenced cell
         } else {
             if (isNumber(form)) {
-                ans = getDouble(form);
+                ans = getDouble(form);// Convert number string to Double
             } else {
-                int ind = findLastOp(form);
-                int opInd = opCode(form.substring(ind, ind + 1));
+                int ind = findLastOp(form);// Find last operator position
+                int opInd = opCode(form.substring(ind, ind + 1));// Get operation type
                 if (ind == 0) {  // the case of -1, or -(1+1)
                     double d = 1;
-                    if (opInd == 1) {
+                    if (opInd == 1) {// If the operator is '-', negate the value
                         d = -1;
                     }
-                    ans = d * computeFormP(form.substring(1));
+                    ans = d * computeFormP(form.substring(1));// Recursively compute the remaining expression
                 } else {
                     String f1 = form.substring(0, ind);
                     String f2 = form.substring(ind + 1);
@@ -499,6 +610,12 @@ public class Ex2Sheet implements Sheet {
         return ans;
     }
 
+    /**
+     * Finds the position of the last operator in an expression.
+     * Used to determine where to split for recursive computation.
+     * @param form The formula string.
+     * @return The index of the last operator found, or -1 if none is found.
+     */
     private static int findLastOp(String form) {
         int ans = -1;
         double s1 = 0, min = -1;
@@ -525,6 +642,11 @@ public class Ex2Sheet implements Sheet {
         return ans;
     }
 
+    /**
+     * Removes surrounding parentheses.
+     * @param s The input string.
+     * @return The modified string without unnecessary parentheses.
+     */
     private static String removeB(String s) {
         if (canRemoveB(s)) {
             s = s.substring(1, s.length() - 1);
@@ -532,6 +654,12 @@ public class Ex2Sheet implements Sheet {
         return s;
     }
 
+    /**
+     * Determines whether parentheses can be safely removed from a string.
+     * Ensures the parentheses enclose the entire expression correctly.
+     * @param s The input string.
+     * @return True if the parentheses can be removed, otherwise false.
+     */
     private static boolean canRemoveB(String s) {
         boolean ans = false;
         if (s != null && s.startsWith("(") && s.endsWith(")")) {
@@ -553,6 +681,13 @@ public class Ex2Sheet implements Sheet {
         return ans;
     }
 
+    /**
+     * Checks if a given character at a specific index in a string is an operator.
+     * @param line The string to check.
+     * @param words The array of operator symbols.
+     * @param start The index to check for an operator.
+     * @return The index of the operator in words, or -1 if not found.
+     */
     private static int op(String line, String[] words, int start) {
         int ans = -1;
         line = line.substring(start);
@@ -564,6 +699,11 @@ public class Ex2Sheet implements Sheet {
         return ans;
     }
 
+    /**
+     * Checks if a given string represents a valid number.
+     * @param line The string to check.
+     * @return True if the string can be parsed as a number, otherwise false.
+     */
     public static boolean isNumber(String line) {
         boolean ans = false;
         try {
@@ -575,19 +715,11 @@ public class Ex2Sheet implements Sheet {
         return ans;
     }
 
-    public static boolean BasicValidIF(String line) {
-        if (line.isEmpty()) {
-            return false;
-        }
-        if (line.length() < 3) {
-            return false;
-        }
-        if (!(line.startsWith("=if"))) {
-            return false;
-        }
-        return true;
-    }
-
+    /**
+     * Extracts the condition part from an IF function.
+     * @param line The IF function string.
+     * @return The extracted condition as a string.
+     */
     public static String ifCondition(String line) {
         if (line.length() < 12) {
             return "";
@@ -597,6 +729,12 @@ public class Ex2Sheet implements Sheet {
         return condition;
     }
 
+    /**
+     * Evaluates the condition of an IF function and returns the result.
+     * Supports conditions such as <, >, <=, >=, ==, and !=.
+     * @param line The IF function string.
+     * @return True if the condition evaluates to true, otherwise false.
+     */
     public boolean evaluateCondition(String line) {
         String condition = ifCondition(line);
         if (condition.contains("<=")) {
@@ -632,7 +770,11 @@ public class Ex2Sheet implements Sheet {
         }
         return false;
     }
-
+    /**
+     * Extracts the 'true' part of an IF function.
+     * @param line The IF function string.
+     * @return The string representing the true case of the IF function.
+     */
     public static String ifTrue(String line) {
         int indexEndCondition = line.indexOf(",");
         int indexIfTrueStart = indexEndCondition + 1;
@@ -654,6 +796,11 @@ public class Ex2Sheet implements Sheet {
         return line.substring(indexIfTrueStart, indexIfTrueEnd);
     }
 
+    /**
+     * Extracts the 'false' part of an IF function.
+     * @param line The IF function string.
+     * @return The string representing the false case of the IF function.
+     */
     public static String ifFalse(String line) {
         int indexEndCondition = line.indexOf(",");
         int indexIfTrueStart = indexEndCondition + 1;
@@ -671,26 +818,33 @@ public class Ex2Sheet implements Sheet {
         return line.substring(indexIfTrueEnd + 1, line.length() - 1);
     }
 
+    /** Evaluates an IF function by computing its condition and returning the appropriate value.
+     * If the condition is true, it returns the true part; otherwise, it returns the false part.
+     * The true and false branches can be numbers, formulas, functions, text, or IF statements.
+     * If the condition is true, it returns the true branch; otherwise, it returns the false branch.
+     * @param line The IF function string.
+     * @return The computed result of the IF function as an Object (Number or String).
+     */
     public Object evaluateIf(String line) {
-        if (evaluateCondition(line)) {
+        if (evaluateCondition(line)) {//if condition is true
             String trueCondition = ifTrue(line);
             if (isNumber(trueCondition)) {
-                return Double.parseDouble(trueCondition);
+                return Double.parseDouble(trueCondition);// Convert number string to Double
             }
             if (SCell.isFunction(trueCondition)) {
                 Range2D range = new Range2D(Range2D.findStartAndEndValid(trueCondition));
                 range.updateValue(this);
-                return range.evaluateFunction(trueCondition);
+                return range.evaluateFunction(trueCondition);// Evaluate function in the range
             }
             if (SCell.BasicIsForm(trueCondition)) {
-                return computeFormP(trueCondition.substring(1));
+                return computeFormP(trueCondition.substring(1));// Compute mathematical expression
             }
             if (SCell.isIf(trueCondition)) {
-                return evaluateIf(trueCondition);
+                return evaluateIf(trueCondition);// Recursively evaluate IF statement
             }
-            return trueCondition;
+            return trueCondition;// Return as a string if none of the above conditions apply
         } else {
-            String falseCondition = ifFalse(line);
+            String falseCondition = ifFalse(line);//if the condition is false
             if (isNumber(falseCondition)) {
                 return Double.parseDouble(falseCondition);
             }
@@ -709,6 +863,12 @@ public class Ex2Sheet implements Sheet {
         }
     }
 
+    /**
+     * Checks an IF function is in a correct format.
+     * Checks for the correct number of commas, parentheses balance, and valid conditions.
+     * @param _line The IF function string.
+     * @return True if the IF function is correctly formatted, otherwise false.
+     */
     public boolean validIf(String _line) {
         if (_line.isEmpty() || _line.isBlank()) {
             return false;
@@ -718,7 +878,7 @@ public class Ex2Sheet implements Sheet {
         int close = 0;
         for (int i = 0; i < _line.length(); i++) {
             if (_line.charAt(i) == ',') {
-                count++;
+                count++;// Count commas to ensure correct IF format
             }
             if (_line.charAt(i) == '(') {
                 open++;
@@ -728,29 +888,35 @@ public class Ex2Sheet implements Sheet {
             }
         }
         if (count < 2) {
-            return false;
+            return false;// IF function must have at least two commas
         }
         if (open != close) {
-            return false;
+            return false;// Parentheses must be equal
         }
         if (ifTrue(_line).equals(_line) || ifFalse(_line).equals(_line)) {
-            return false;
+            return false;// Check if the true or false branch is the same as the entire IF statement, which would cause an infinite recursive loop
         }
         if (_line.contains(" ")) {
-            return false;
+            return false;// IF function should not contain spaces
         }
         if (!validConditionIf(ifCondition(_line))) {
-            return false;
+            return false;// Check if the condition part of the IF statement is valid.
         }
         if (!validIfTrueAndFalse(ifTrue(_line))) {
-            return false;
+            return false;// check if the true part is valid.
         }
         if (!validIfTrueAndFalse(ifFalse(_line))) {
-            return false;
+            return false;// check if the false part is valid.
         }
         return true;
     }
 
+    /**
+     * Check if the condition part of an IF function is valid.
+     * Ensures it contains a valid comparison operator and valid formula on both sides.
+     * @param _line The condition string.
+     * @return True if the condition is valid, otherwise false.
+     */
     public boolean validConditionIf(String _line) {
         if (_line.isEmpty()) {
             return false;
@@ -759,7 +925,7 @@ public class Ex2Sheet implements Sheet {
         String oprator = null;
         for (int i = 0; i < Ex2Utils.B_OPS.length; i++) {
             if (countOccurrences(_line, Ex2Utils.B_OPS[i]) > 1) {
-                return false;
+                return false;// Condition should contain only one operator
             }
             if (_line.contains(Ex2Utils.B_OPS[i])) {
                 pass++;
@@ -767,32 +933,32 @@ public class Ex2Sheet implements Sheet {
             }
         }
         if (pass != 1 || oprator == null) {
-            return false;
+            return false;// Must contain exactly one operator
         }
         int indexOperator = _line.indexOf(oprator);
         if (indexOperator == -1) {
-            return false;
+            return false; // Operator not found, invalid condition
         }
         String leftFormula = _line.substring(0, indexOperator);
         String rightFormula = _line.substring(indexOperator + oprator.length());
         if (leftFormula.isEmpty()) {
-            return false;
+            return false;// Left side of the condition must not be empty
         }
         if (leftFormula.charAt(0) == '=') {
             if (!isForm(leftFormula.substring(1))) {
-                return false;
+                return false; // Left formula must be a valid.
             }
             try {
                 Double leftF = computeFormP(leftFormula.substring(1));
                 if (leftF == null){
-                    return false;
+                    return false;// Left formula must be computable
                 }
             } catch (Exception L) {
                 return false;
             }
         } else {
             if (!isForm(leftFormula)) {
-                return false;
+                return false;// Right side of the condition must not be empty
             }
             try {
                 Double leftF = computeFormP(leftFormula);
@@ -832,7 +998,7 @@ public class Ex2Sheet implements Sheet {
                 return false;
             }
         }
-        return true;
+        return true;// If all checks pass, the condition is valid
     }
 
     public boolean validIfTrueAndFalse(String line) {
