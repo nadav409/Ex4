@@ -1000,56 +1000,73 @@ public class Ex2Sheet implements Sheet {
         }
         return true;// If all checks pass, the condition is valid
     }
-
+    /**
+     * Validates if the true or false parts of an IF function are valid.
+     * The value can be a text,number, formula, function, or another IF statement.
+     * @param line The true or false part of the IF function.
+     * @return True if valid, otherwise false.
+     */
     public boolean validIfTrueAndFalse(String line) {
         if (line.isEmpty()) {
             return false;
         }
         if (line.charAt(0) != '=') {
-            return true;
+            return true;// If it's a text, it's valid
         }
         if (isForm(line.substring(1))) {
-            return true;
+            return true;// If it's a valid formula, return true
         }
         if (isNumber(line)) {
-            return true;
+            return true;// If it's a number, return true
         }
         if (Range2D.advnacedValidFunction(line, this)) {
-            return true;
+            return true;// If it's a valid function, return true
         }
         if (validIf(line)) {
-            return true;
+            return true;// If it's a valid IF statement, return true
         }
         return false;
     }
-
+    /**
+     * Counts the occurrences of a substring in a given text.
+     * @param text The main text.
+     * @param sub The substring to search for.
+     * @return The number of times the substring appears in the text.
+     */
     public static int countOccurrences(String text, String sub) {
         int count = 0;
         int index = 0;
+        // Loop through the text to find all occurrences of the substring
         while ((index = text.indexOf(sub, index)) != -1) {
             count++;
-            index += sub.length();
+            index += sub.length();// Move index forward to avoid overlapping matches
         }
         return count;
     }
-
+    /**
+     * Retrieves all referenced cells inside an IF function, including IFs and functions.
+     * @param line The IF function string.
+     * @return A string representation of all referenced cells.
+     */
     public String allCellsInIf(String line) {
+        //All referenced cells from the IF condition
         ArrayList<Index2D> cells = allCells(ifCondition(line));
-        StringBuilder result = new StringBuilder("[");
-
+        StringBuilder result = new StringBuilder("["); // Create a string representation of the referenced cells
+        // Go over all collected cell references
         for (int i = 0; i < cells.size(); i++) {
             result.append(cells.get(i).toString());
             if (i < cells.size() - 1) {
-                result.append(",");
+                result.append(",");// Add a comma separator between cell references, except for the last one
             }
         }
+        // Extract the 'true' and 'false' parts of the IF function
         String True = ifTrue(line);
         String False = ifFalse(line);
 
         if (SCell.isFunction(True)) {
-            result.append(Range2D.AllCellsInRange(True));
+            result.append(Range2D.AllCellsInRange(True));// If the true part is a function, retrieve all referenced cells within its range
         } else if (SCell.isIf(True)) {
-            result.append(allCellsInIf(True)); // Recursively handle nested IF
+            result.append(allCellsInIf(True)); // If the true part contains a nested IF, recursively process its referenced cells
         }
         if (SCell.isFunction(False)) {
             result.append(Range2D.AllCellsInRange(False));
@@ -1057,9 +1074,14 @@ public class Ex2Sheet implements Sheet {
             result.append(allCellsInIf(True));
         }
         result.append("]");
-        return result.toString();
+        return result.toString(); // Convert the collected cell references into a string format and return
     }
-
+    /**
+     * Checks if a given string represents a valid spreadsheet cell.
+     * A valid cell follows the format "A0" to "Z99".
+     * @param a The cell reference.
+     * @return True if the cell is valid, otherwise false.
+     */
     public static boolean validCell(String a) {
         if (a == null || a.isEmpty()) {
             return false;
@@ -1083,7 +1105,12 @@ public class Ex2Sheet implements Sheet {
         }
         return false;
     }
-
+    /**
+     * Checks if a given cell reference is valid within the spreadsheet dimensions.
+     * Ensures the cell exists within the defined width and height.
+     * @param line The cell reference string.
+     * @return True if the cell exists in the sheet, otherwise false.
+     */
     public boolean advancedValidCell(String line) {
         if (!validCell(line)) {
             return false;
