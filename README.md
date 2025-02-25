@@ -44,7 +44,7 @@ These functions work with **ranges of numbers**:
   ```
   This means:
   - If `A1` is greater than `10`, it then checks `B1`.
-  - If `B1` is less than `5`, it returns "50", otherwise, it returns "Check".
+  - If `B1` is less than `5`, it returns `50`, otherwise, it returns "Check".
   - If `A1` is not greater than `10`, it returns "Low".
 
 ### **4️⃣ Error Handling & Validation**
