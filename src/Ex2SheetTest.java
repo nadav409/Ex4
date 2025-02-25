@@ -34,6 +34,20 @@ class Ex2SheetTest {
         assertEquals("128.0", sheet.value(1, 2));
         sheet.set(1, 3, "=max(a0,a1)");
         assertEquals(Ex2Utils.FUNC_ERR, sheet.value(1, 3));
+        sheet.set(2, 3, "=A10");
+        assertEquals(Ex2Utils.ERR_FORM, sheet.value(2, 3));
+        sheet.set(3, 3, "=A4");
+        sheet.set(4, 4, "=D3");
+        sheet.set(3, 3, "=E4");
+        assertEquals(Ex2Utils.ERR_CYCLE, sheet.value(3, 3));
+        sheet.set(6, 6, "=A1+Hello");
+        assertEquals(Ex2Utils.ERR_FORM, sheet.value(6, 6));
+        sheet.set(8, 8, "=if(5,10,20)");
+        assertEquals(Ex2Utils.ERRWRONG_IF, sheet.value(8, 8));
+        sheet.set(8, 9, "=if(A1>5,10)");
+        assertEquals(Ex2Utils.ERRWRONG_IF, sheet.value(8, 9));
+
+
 
     }
 
@@ -141,6 +155,22 @@ class Ex2SheetTest {
         assertEquals("15.0", sheet.value(3, 0));
         sheet.set(0, 0, "");
         assertEquals("10.0", sheet.value(3, 0));
+        sheet.set(1, 0, "Hello");
+        sheet.set(3, 0, "=average(A0:B0)");
+        assertEquals(Ex2Utils.FUNC_ERR, sheet.value(3, 0));
+        sheet.set(1, 0, "=10*4");
+        assertEquals("20.0", sheet.value(3, 0));
+        sheet.set(0, 0, "-5.5");
+        sheet.set(1, 0, "3.5");
+        sheet.set(3, 0, "=average(A0:B0)");
+        assertEquals("-1.0", sheet.value(3, 0));
+        sheet.set(0, 0, "10");
+        sheet.set(1, 0, "20");
+        sheet.set(2, 0, "");
+        sheet.set(3, 0, "50");
+        sheet.set(4, 0, "=average(A0:D0)");
+        assertEquals("20.0", sheet.value(4, 0));
+
     }
 
     @Test
