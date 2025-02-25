@@ -36,12 +36,16 @@ These functions work with **ranges of numbers**:
 
 - The `if` function allows conditions:
   ```
-  =if(A1>10, "High", "Low")
+  =if(A1>10,High,Low)
   ```
-- Supports **nested conditions**:
+- The `if` function can also contain another `if` inside it to check multiple conditions:
   ```
-  =if(A1>10, if(B1<5, "OK", "Check"), "Low")
+  =if(A1>10, if(B1<5,50,Check),Low)
   ```
+  This means:
+  - If `A1` is greater than `10`, it then checks `B1`.
+  - If `B1` is less than `5`, it returns "50", otherwise, it returns "Check".
+  - If `A1` is not greater than `10`, it returns "Low".
 
 ### **4️⃣ Error Handling & Validation**
 
@@ -52,12 +56,23 @@ These functions work with **ranges of numbers**:
 
 ---
 
+## **✅ Important Rules for Functions & IF Statements**
+
+1. **Functions and `if` statements must start with `=`** (e.g., `=if(A1>5,10,20)`).
+2. **Functions and `if` statements cannot contain spaces** (e.g., `=sum(A1:B1)` is valid, but `= sum ( A1 : B1 )` is not).
+3. **The `if` condition must be structured as** `validformula_operator_valid_formula` (e.g., `A1>5`, `B1==C1`).
+4. **`if_true` and `if_false` can be** a number, text, formula, function, or another valid `if` statement.
+5. **If a function references itself within its range, it results in a circular error (`ERR_CYCLE`).** This applies to both **ranges and `if` statements**.
+6. **Empty cells in a function range are allowed**, but if any cell in the range contains text, it results in a `FUNC_ERR`.
+
+---
+
 ## **📝 Function Validations & Usage**
 
 ### **✅ Valid Functions:**
 
-✔ `=if(A1>5, 10, 20)`
-✔ `=if(A1*A2 != A3/(2-A1), A2+2, A1+1)`
+✔ `=if(A1>5,10,20)`
+✔ `=if(A1*A2!=A3/(2-A1),A2+2,A1+1)`
 ✔ `=sum(A1:C5)`, `=min(A1:B4)`, `=max(A2:D3)`, `=multiply(A1:B3)`
 
 ### **❌ Invalid Functions:**
@@ -80,6 +95,4 @@ This project includes **rigorous JUnit tests** for:
 ✔ Circular reference detection in `depth()`
 
 ```
-
-
 
