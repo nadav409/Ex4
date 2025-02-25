@@ -9,18 +9,7 @@ This project is an **advanced spreadsheet system** that extends traditional spre
 ✔ **Comprehensive error handling** for invalid functions and circular dependencies.
 ✔ **Persistence** through file save and load capabilities.
 
-The spreadsheet supports **formulas and functions**, allowing complex computations to be performed across multiple cells. This system ensures **robust formula validation** and prevents circular references.
-
-## **✅ Important Rules for Functions & IF Statements**
-
-1. **Functions and ****`if`**** statements must start with ****`=`** (e.g., `=if(A1>5,10,20)`).
-2. **Functions and ****`if`**** statements cannot contain spaces** (e.g., `=sum(A1:B1)` is valid, but `= sum ( A1 : B1 )` is not).
-3. **The ****`if`**** condition must be structured as** `valid_formula operator valid_formula` (e.g., `A1>5`, `B1==C1`).
-4. **`if_true`**** and ****`if_false`**** can be** a number, text, function, or another valid `if` statement.
-5. **If a function references itself within its range, it results in a circular error** (`ERR_CYCLE`). This applies to both **ranges and ****`if`**** statements**.
-6. **Empty cells in a function range are allowed**, but if any cell in the range contains text, it results in a `FUNC_ERR`.
-
----
+The spreadsheet supports **formulas and functions**, allowing complex computations to be performed across multiple cells. This system ensures **robust formula validation** and prevents circular references
 
 ## **🚀 Features & Functionality**
 
@@ -57,6 +46,17 @@ These functions operate over **numeric cell ranges**:
 - **Circular references** are **detected** (e.g., `A1 = if(A1>3, 2, 4)`).
 - **If a range contains empty cells, they are ignored, but if a range contains text, it triggers ****`FUNC_ERR`**.
 
+---  
+
+## **✅ Important Rules for Functions & IF Statements**
+
+1. **Functions and ****`if`**** statements must start with ****`=`** (e.g., `=if(A1>5,10,20)`).
+2. **Functions and ****`if`**** statements cannot contain spaces** (e.g., `=sum(A1:B1)` is valid, but `= sum ( A1 : B1 )` is not).
+3. **The ****`if`**** condition must be structured as** `valid_formula operator valid_formula` (e.g., `A1>5`, `B1==C1`).
+4. **`if_true`**** and ****`if_false`**** can be** a number, text, function, or another valid `if` statement.
+5. **If a function references itself within its range, it results in a circular error** (`ERR_CYCLE`). This applies to both **ranges and ****`if`**** statements**.
+6. **Empty cells in a function range are allowed**, but if any cell in the range contains text, it results in a `FUNC_ERR`.
+
 ---
 
 ## **📝 Function Validations & Usage**
@@ -86,15 +86,5 @@ This project includes **rigorous JUnit tests** for:
 ✔ Handling **invalid inputs and edge cases**
 ✔ Circular reference detection in `depth()`
 
-**Example test case for ****`multiply`**** function:**
-
-```java
-@Test
-void testMultiplyFunction() {
-    sheet.set(0, 0, "2");
-    sheet.set(1, 0, "3");
-    sheet.set(2, 0, "=multiply(A1:B1)");
-    assertEquals("6.0", sheet.value(2, 0));
-}
 ```
 
