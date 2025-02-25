@@ -118,6 +118,10 @@ public class Range2D {
         return min.toString();
     }
 
+    /**
+     * Finds the biggest number in the range.
+     * @return The biggest value as a string.
+     */
     public String maxValue() {
         Double max = Double.MIN_VALUE;
         for (int i = 0; i < this.value.length; i++) {
@@ -134,6 +138,10 @@ public class Range2D {
         return max.toString();
     }
 
+    /**
+     * Calculates the sum of all the numbers in the range.
+     * @return The sum as a string.
+     */
     public String sumValue() {
         Double sum = 0.0;
         for (int i = 0; i < this.value.length; i++) {
@@ -147,6 +155,11 @@ public class Range2D {
         }
         return sum.toString();
     }
+
+    /**
+     * Multiplies all the numbers in the range.
+     * @return The product as a string.
+     */
     public String multiplyValue() {
         Double multiply = 1.0;
         for (int i = 0; i < this.value.length; i++) {
@@ -164,6 +177,10 @@ public class Range2D {
         return multiply.toString();
     }
 
+    /**
+     * Finds the average of the numbers in the range.
+     * @return The average as a string.
+     */
     public String averageValue() {
         String sum = this.sumValue();
         Double sum1 = Double.parseDouble(sum);
@@ -172,12 +189,22 @@ public class Range2D {
         return average.toString();
     }
 
+    /**
+     * Gets the start and end values from a given string.
+     * @param line The input string containing range information.
+     * @return A substring containing the extracted range.
+     */
     public static String findStartAndEndValid(String line) {
         int indexStart = line.indexOf("(");
         int indexEnd = line.indexOf(")");
         return line.substring(indexStart + 1, indexEnd);
     }
 
+    /**
+     * Gets all the cell names within a given range.
+     * @param line The input string containing range information.
+     * @return A list of all cell names within the range as a string.
+     */
     public static String AllCellsInRange(String line) {
         int indexStart = line.indexOf("(");
         int indexEnd = line.indexOf(")");
@@ -186,6 +213,12 @@ public class Range2D {
         ArrayList<String> CellsInRange = current.getCellNames();
         return CellsInRange.toString();
     }
+
+    /**
+     * Checks if a given formula line is a basic valid function.
+     * @param line The formula string.
+     * @return True if valid, otherwise false.
+     */
     public static boolean BasicValidFunction(String line){
         line = line.toLowerCase();
         if (line.charAt(0) != '='){
@@ -204,6 +237,11 @@ public class Range2D {
         return false;
     }
 
+    /**
+     * Checks if a function is valid.
+     * @param line The input function string.
+     * @return True if the function format is valid, otherwise false.
+     */
     public static boolean ValidFunction(String line) {
         int space = line.indexOf(" ");
         if (space != -1) {
@@ -233,6 +271,14 @@ public class Range2D {
         }
         return true;
     }
+
+    /**
+     * Checks if a given function is valid.
+     * It verifies the function format and checks if the referenced cells are valid.
+     * @param line The function string.
+     * @param t The Ex2Sheet object for validation.
+     * @return True if valid, otherwise false.
+     */
     public static boolean advnacedValidFunction(String line,Ex2Sheet t){
         if (ValidFunction(line)){
             int indexStart = line.indexOf("(");
@@ -252,23 +298,45 @@ public class Range2D {
         return false;
     }
 
+    /**
+     * Checks if the given function is a MIN function.
+     * @param line The function string.
+     * @return True if it is a MIN function, otherwise false.
+     */
     public static boolean MinFunction(String line) {
         line = line.toLowerCase();
         int indexEnd = line.indexOf("(");
         return line.substring(1, indexEnd).equals("min");
     }
 
+    /**
+     * Checks if the given function is a MAX function.
+     * @param line The function string.
+     * @return True if it is a MAX function, otherwise false.
+     */
    public static boolean MaxFunction(String line) {
         line = line.toLowerCase();
         int indexEnd = line.indexOf("(");
         return line.substring(1, indexEnd).equals("max");
     }
 
+    /**
+     *
+     * Checks if the given function is a SUM function.
+     * @param line The function string.
+     * @return True if it is a SUM function, otherwise false.
+     */
    public static boolean SumFunction(String line) {
         line = line.toLowerCase();
         int indexEnd = line.indexOf("(");
         return line.substring(1, indexEnd).equals("sum");
     }
+
+    /**
+     * Checks if the given function is a MULTIPLY function.
+     * @param line The function string.
+     * @return True if it is a MULTIPLY function, otherwise false.
+     */
     public static boolean MultiplyFunction(String line) {
         line = line.toLowerCase();
         int indexEnd = line.indexOf("(");
