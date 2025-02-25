@@ -343,11 +343,22 @@ public class Range2D {
         return line.substring(1, indexEnd).equals("multiply");
     }
 
+    /**
+     * Checks if the given function is an AVERAGE function.
+     * @param line The function string.
+     * @return True if it is an AVERAGE function, otherwise false.
+     */
    public static boolean AverageFunction(String line) {
         line = line.toLowerCase();
         int indexEnd = line.indexOf("(");
         return line.substring(1, indexEnd).equals("average");
     }
+
+    /**
+     * Computes the result of the given function.
+     * @param line The function string.
+     * @return The computed function result as a Double.
+     */
     public Double evaluateFunction(String line){
         if (Range2D.MinFunction(line)) {
             Double dd = Double.parseDouble(this.minValue());
@@ -370,6 +381,14 @@ public class Range2D {
             return dd;
         }
     }
+
+    /**
+     * Checks if the given cell types in the range are valid (numeric values or empty cells only).
+     * @param t The Ex2Sheet object containing the sheet data.
+     * @param start The starting cell in the range.
+     * @param end The ending cell in the range.
+     * @return True if all cells are valid numeric values, otherwise false.
+     */
     public static boolean checkValidCellTypes(Ex2Sheet t,CellEntry start,CellEntry end) {
         int height = end.getY() - start.getY() + 1;
         int width = end.getX() - start.getX() + 1;
