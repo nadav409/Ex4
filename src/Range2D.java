@@ -334,7 +334,7 @@ public class Range2D {
 
     /**
      * Checks if the given function is a MULTIPLY function.
-     * @param line The function string.
+     * @param line The function string
      * @return True if it is a MULTIPLY function, otherwise false.
      */
     public static boolean MultiplyFunction(String line) {
