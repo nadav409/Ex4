@@ -135,11 +135,10 @@ class Ex2SheetTest {
         sheet.set(2, 0, "3.5");
         sheet.set(3, 0, "=sum(B0:C0)");
         assertEquals("-2.0", sheet.value(3, 0));
-        sheet.set(0, 0, "=sum(A1:A1000)");  // Some cells don’t exist
+        sheet.set(0, 0, "=sum(A1:A1000)");
         assertEquals(Ex2Utils.FUNC_ERR, sheet.value(0, 0));
         sheet.set(1, 0, "=sum(A1,Hello)");
         assertEquals(Ex2Utils.FUNC_ERR, sheet.value(1, 0));
-
 
     }
 
@@ -156,6 +155,24 @@ class Ex2SheetTest {
         assertEquals("20.0", sheet.value(4, 0));
         sheet.set(0, 0, "=MAX(A1)");
         assertEquals(Ex2Utils.FUNC_ERR, sheet.value(0, 0));
+        sheet.set(1, 0, "10");
+        sheet.set(2, 0, "");
+        sheet.set(3, 0, "=max(B0:C0)");
+        assertEquals("10.0", sheet.value(3, 0));
+        sheet.set(1, 0, "10");
+        sheet.set(2, 0, "Hello");
+        sheet.set(3, 0, "=max(B0:C0)");
+        assertEquals(Ex2Utils.FUNC_ERR, sheet.value(3, 0));
+        sheet.set(1, 0, "-5.5");
+        sheet.set(2, 0, "3.5");
+        sheet.set(3, 0, "=max(B0:C0)");
+        assertEquals("3.5", sheet.value(3, 0));
+        sheet.set(1, 0, "15");
+        sheet.set(2, 0, "=max(B0)");
+        assertEquals(Ex2Utils.FUNC_ERR, sheet.value(2, 0));
+        sheet.set(0, 0, "=max(B1:B200");
+        assertEquals(Ex2Utils.FUNC_ERR, sheet.value(0, 0));
+
     }
     @Test
     void testMinFunction() {
@@ -171,6 +188,16 @@ class Ex2SheetTest {
         sheet.set(1, 0, "1");
         assertEquals("1.0", sheet.value(3, 0));
         assertEquals("1.0", sheet.value(1, 1));
+        sheet.set(2, 4, "-4.5");
+        sheet.set(3, 4, "2.8");
+        sheet.set(4, 4, "=min(C4:D4)");
+        assertEquals("-4.5", sheet.value(4, 4));
+        sheet.set(8, 2, "=min(A5,Hello)");
+        assertEquals(Ex2Utils.FUNC_ERR, sheet.value(8, 2));
+        sheet.set(0, 2, "=min(A2:A3)");
+        assertEquals(Ex2Utils.ERR_CYCLE, sheet.value(0, 2));
+
+
     }
 
     @Test
@@ -260,11 +287,11 @@ class Ex2SheetTest {
 
     @Test
     void testifCondition() {
-        String formula = "=if(A1>5, 10, 20)";
+        String formula = "=if(A1>5,10,20)";
         assertEquals("A1>5", sheet.ifCondition(formula));
-        String formula1 = "=if(A1==5, 10, 20)";
+        String formula1 = "=if(A1==5,10,20)";
         assertEquals("A1==5", sheet.ifCondition(formula1));
-        String formula2 = "=if((2+3)*8+a0>20, 10, 20)";
+        String formula2 = "=if((2+3)*8+a0>20,10,20)";
         assertEquals("(2+3)*8+a0>20", sheet.ifCondition(formula2));
     }
     @Test
@@ -317,6 +344,25 @@ class Ex2SheetTest {
         assertEquals("20.0", sheet.value(0, 0));
         sheet.set(0, 0, "=if(b0>5,=multiply(b0:c1),2)");
         assertEquals("-4000.0", sheet.value(0, 0));
+        sheet.set(3, 0, "");
+        sheet.set(0, 0, "=if(D0>5,100,200)");
+        assertEquals(Ex2Utils.ERRWRONG_IF, sheet.value(0, 0));
+        sheet.set(1, 2, "4");
+        sheet.set(2, 2, "6");
+        sheet.set(0, 0, "=if(5>2,=sum(B2:C2),=average(B2:C2))");
+        assertEquals("10.0", sheet.value(0, 0));
+        sheet.set(0, 0, "=if(-5<-2,100,200)");
+        assertEquals("100.0", sheet.value(0, 0));
+        sheet.set(4, 0, "Text");
+        sheet.set(0, 0, "=if(D0>2,100,200)");
+        assertEquals(Ex2Utils.ERRWRONG_IF, sheet.value(0, 0));
+        sheet.set(0, 0, "=if(5>2,100)");
+        assertEquals(Ex2Utils.ERRWRONG_IF, sheet.value(0, 0));
+        sheet.set(0, 0, "=if(5>2,=sum(A1:b200),=min(A2))");
+        assertEquals(Ex2Utils.ERRWRONG_IF, sheet.value(0, 0));
+        sheet.set(4, 0, "Text");
+        sheet.set(0, 0, "=if(5>2,=if(D0>3,4,5),200)");
+        assertEquals(Ex2Utils.ERRWRONG_IF, sheet.value(0, 0));
 
     }
     @Test
