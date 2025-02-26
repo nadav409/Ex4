@@ -48,7 +48,7 @@ These functions work with **ranges of numbers**:
   ```
 - The `if` function can also contain another `if` inside it to check multiple conditions:
   ```
-  =if(A1>10, if(B1<5,50,Check),Low)
+  =if(A1>10,=if(B1<5,50,Check),Low)
   ```
   This means:
   - If `A1` is greater than `10`, it then checks `B1`.
