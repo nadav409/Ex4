@@ -911,57 +911,8 @@ public class Ex2Sheet implements Sheet {
         return true;
     }
 
-    public Boolean advancedValidIf(String line, Ex2Sheet t) {
-        if (validIf(line)) {
-            ArrayList<Index2D> cells = allCells(line);
-            if (cells.isEmpty()) {
-                return true;
-            }
-
-            String True = ifTrue(line);
-            String False = ifFalse(line);
-
-            // Check True branch
-            if (SCell.isFunction(True)) {
-                if (!Range2D.advnacedValidFunction(True, this)) {
-                    return false;
-                } else {
-                    Range2D range = new Range2D(True);
-                    ArrayList<Index2D> cellsTrue = range.getcells();
-                    cells.addAll(cellsTrue);
-                }
-            } else if (SCell.isIf(True)) {
-                if (!advancedValidIf(True, this)) {
-                    return false;
-                }
-            }
-
-            // Check False branch
-            if (SCell.isFunction(False)) {
-                if (!Range2D.advnacedValidFunction(False, this)) {
-                    return false;
-                } else {
-                    Range2D range1 = new Range2D(False);  //
-                    ArrayList<Index2D> cellsFalse = range1.getcells();
-                    cells.addAll(cellsFalse);
-                }
-            } else if (SCell.isIf(False)) {
-                if (!advancedValidIf(False, this)) {
-                    return false;
-                }
-            }
-            // Validate all cells
-            int count = 0;
-            for (int i = 0; i < cells.size(); i++) {
-                Index2D current = cells.get(i);
-                if (!advancedValidCell(current.toString())) {
-                    count++;
-                }
-            }
-
-            return count == 0;
-        }
-        return false;
+    public Boolean advancedValidIf(String line) {
+        return validIf(line) && CheckCellsInIf(line);
     }
 
 
@@ -1185,6 +1136,51 @@ public class Ex2Sheet implements Sheet {
         }
 
         return false;
+    }
+
+    public ArrayList<Index2D> allCellsIf(String line){
+        ArrayList<Index2D> cells = allCells(line);
+        String ifTrue = ifTrue(line);
+        String ifFalse = ifFalse(line);
+        if (SCell.isFunction(ifTrue)){
+            Range2D range = new Range2D(Range2D.findStartAndEndValid(ifTrue));
+            ArrayList<Index2D> cellsInTrue =  range.getcells();
+            cells.addAll(cellsInTrue);
+        }
+        if (SCell.isIf(ifTrue)){
+            ArrayList<Index2D> cellsInIfTrue = allCellsIf(ifTrue);
+            cells.addAll(cellsInIfTrue);
+        }
+        if (SCell.isFunction(ifFalse)){
+            Range2D range1 = new Range2D(Range2D.findStartAndEndValid(ifFalse));
+            ArrayList<Index2D> cellsInFalse =  range1.getcells();
+            cells.addAll(cellsInFalse);
+        }
+        if (SCell.isIf(ifFalse)){
+            ArrayList<Index2D> cellsInIfFalse = allCellsIf(ifFalse);
+            cells.addAll(cellsInIfFalse);
+        }
+        return cells;
+    }
+
+    public boolean CheckCellsInIf(String line){
+        ArrayList<Index2D> cells = allCellsIf(line);
+        if(cells.isEmpty()){
+            return true;
+        }
+        for (int i = 0;i<cells.size();i++){
+            Cell current = get(cells.get(i).toString());
+            if (current.getData().isEmpty()){
+                return false;
+            }
+            if(!advancedValidCell(current.toString())){
+                return false;
+            }
+            if(current.getType() == Ex2Utils.TEXT || current.getType() == Ex2Utils.FUNC_ERR_FORMAT || current.getType() == Ex2Utils.ERR_WRONG_IF || current.getType() == Ex2Utils.ERR_CYCLE_FORM || current.getType() == Ex2Utils.ERR_FORM_FORMAT ){
+                return false;
+            }
+        }
+        return true;
     }
 }
 

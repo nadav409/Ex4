@@ -110,8 +110,8 @@ class Ex2SheetTest {
         sheet.set(4, 0, "=Multiply(E0:E1)");
         assertEquals(Ex2Utils.ERR_CYCLE, sheet.value(4, 0));
         //sheet.set(0, 0, "=if(a0>2,4,5)");
-      //  assertEquals(Ex2Utils.ERR_CYCLE, sheet.value(0, 0));
-        ;
+        //assertEquals(Ex2Utils.ERR_CYCLE, sheet.value(0, 0));
+
     }
 
     @Test
