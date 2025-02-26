@@ -58,8 +58,8 @@ These functions work with **ranges of numbers**:
 ### **4️⃣ Error Handling & Validation**
 
 - **`IF_ERR`** → Invalid `if` syntax (e.g., `=if(A1,5,10)` is not allowed).
-- **`FUNC_ERR`** → Malformed function calls (`=sum(A1)` instead of `=sum(A1:A5)`).
-- **Circular references** are **detected** (e.g., `A1 = if(A1>3, 2, 4)`).
+- **`FUNC_ERR`** → Not valid formed function calls (`=sum(A1)` instead of `=sum(A1:A5)`).
+- **Circular references** are **detected** (e.g., `A1 = if(A1>3,2,4)`).
 - **If a range contains empty cells, they are ignored, but if a range contains text, it triggers `FUNC_ERR`.**
 
 ---
@@ -86,21 +86,24 @@ These functions work with **ranges of numbers**:
 ### **❌ Invalid Functions:**
 
 ❌ `=if(A1>5,10)` *(Missing **`false`** case)*
-❌ `=if(A1, 5, 10)` *(Condition must be a valid comparison)*
+❌ `=if(A1,5,10)` *(Condition must be a valid comparison)*
 ❌ `=min(A1)` *(Must specify a range)*
 ❌ `=sum(A1:A5,B1:B5)` *(Multiple ranges not supported)*
 ❌ `=multiply(A1:A5,B1:B5)` *(Multiple ranges not supported)*
 
 ---
 
-## **🔬 Testing & Edge Cases**
+## 🔬 Testing & Edge Cases
 
-This project includes **rigorous JUnit tests** for:
-✔ `ifCondition()`, `ifTrue()`, `ifFalse()`, `evaluateCondition()`
-✔ `depth()`, `isFormP()`, `findLastOp()`
-✔ `Range2D` operations: `min`, `max`, `sum`, `average`, `multiply`
-✔ Handling **invalid inputs and edge cases**
-✔ Circular reference detection in `depth()`
+This project includes **detailed JUnit tests** to check that everything works correctly and handles errors well.
+
+### ✅ What the Tests Cover:
+✔ **Invalid IF statements** – Testing incorrect conditions, missing parts, wrong data types, and nested IF logic.  
+✔ **Range calculations** – Checking empty cells, text values, mixed data types, and large ranges are handled.  
+✔ **Formulas & expressions** – Making sure formulas are read correctly, operators work as expected, and invalid references are caught.  
+✔ **Circular references** – Detecting loops where formulas depend on each other, stopping infinite calculations.  
+✔ **Edge cases in operations** – Handling negative numbers, empty values, and unusual inputs.  
+✔ **Spreadsheet updates** – Checking how the spreadsheet changes when cells that depend on each other are updated.  
 
 ```
 
