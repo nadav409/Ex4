@@ -911,6 +911,60 @@ public class Ex2Sheet implements Sheet {
         return true;
     }
 
+    public Boolean advancedValidIf(String line, Ex2Sheet t) {
+        if (validIf(line)) {
+            ArrayList<Index2D> cells = allCells(line);
+            if (cells.isEmpty()) {
+                return true;
+            }
+
+            String True = ifTrue(line);
+            String False = ifFalse(line);
+
+            // Check True branch
+            if (SCell.isFunction(True)) {
+                if (!Range2D.advnacedValidFunction(True, this)) {
+                    return false;
+                } else {
+                    Range2D range = new Range2D(True);
+                    ArrayList<Index2D> cellsTrue = range.getcells();
+                    cells.addAll(cellsTrue);
+                }
+            } else if (SCell.isIf(True)) {
+                if (!advancedValidIf(True, this)) {
+                    return false;
+                }
+            }
+
+            // Check False branch
+            if (SCell.isFunction(False)) {
+                if (!Range2D.advnacedValidFunction(False, this)) {
+                    return false;
+                } else {
+                    Range2D range1 = new Range2D(False);  //
+                    ArrayList<Index2D> cellsFalse = range1.getcells();
+                    cells.addAll(cellsFalse);
+                }
+            } else if (SCell.isIf(False)) {
+                if (!advancedValidIf(False, this)) {
+                    return false;
+                }
+            }
+            // Validate all cells
+            int count = 0;
+            for (int i = 0; i < cells.size(); i++) {
+                Index2D current = cells.get(i);
+                if (!advancedValidCell(current.toString())) {
+                    count++;
+                }
+            }
+
+            return count == 0;
+        }
+        return false;
+    }
+
+
     /**
      * Check if the condition part of an IF function is valid.
      * Ensures it contains a valid comparison operator and valid formula on both sides.

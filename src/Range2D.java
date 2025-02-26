@@ -398,7 +398,8 @@ public class Range2D {
                 if (t.get(col, row).getData().equals(empty)){
                     continue;
                 }
-                if(t.get(col,row).getType() == Ex2Utils.TEXT){
+                Cell current = t.get(col,row);
+                if(current.getType() == Ex2Utils.TEXT || current.getType() == Ex2Utils.FUNC_ERR_FORMAT || current.getType() == Ex2Utils.ERR_WRONG_IF || current.getType() == Ex2Utils.ERR_CYCLE_FORM || current.getType() == Ex2Utils.ERR_FORM_FORMAT ){
                     return false;
                 }
             }

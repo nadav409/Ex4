@@ -96,9 +96,22 @@ class Ex2SheetTest {
     void testCircularReference() {
         sheet.set(0, 0, "=B0");
         sheet.set(1, 0, "=A0");
-        sheet.eval();
         assertEquals(Ex2Utils.ERR_CYCLE, sheet.value(0, 0));
         assertEquals(Ex2Utils.ERR_CYCLE, sheet.value(1, 0));
+        sheet.set(1, 0, "=20*2");
+        sheet.set(0, 0, "=B0");
+        sheet.set(2, 0, "=A0");
+        sheet.set(1, 0, "=C0");
+        assertEquals(Ex2Utils.ERR_CYCLE, sheet.value(0, 0));
+        assertEquals(Ex2Utils.ERR_CYCLE, sheet.value(1, 0));
+        assertEquals(Ex2Utils.ERR_CYCLE, sheet.value(2, 0));
+        sheet.set(3, 0, "=D0");
+        assertEquals(Ex2Utils.ERR_CYCLE, sheet.value(3, 0));
+        sheet.set(4, 0, "=Multiply(E0:E1)");
+        assertEquals(Ex2Utils.ERR_CYCLE, sheet.value(4, 0));
+        //sheet.set(0, 0, "=if(a0>2,4,5)");
+      //  assertEquals(Ex2Utils.ERR_CYCLE, sheet.value(0, 0));
+        ;
     }
 
     @Test
@@ -114,6 +127,20 @@ class Ex2SheetTest {
         assertEquals("30.0", sheet.value(4, 0));
         sheet.set(0, 0, "=sum(A1,b2)");
         assertEquals(Ex2Utils.FUNC_ERR, sheet.value(0, 0));
+        sheet.set(1, 0, "10");
+        sheet.set(2, 0, "");
+        sheet.set(3, 0, "=sum(B0:C0)");
+        assertEquals("10.0", sheet.value(3, 0));
+        sheet.set(1, 0, "-5.5");
+        sheet.set(2, 0, "3.5");
+        sheet.set(3, 0, "=sum(B0:C0)");
+        assertEquals("-2.0", sheet.value(3, 0));
+        sheet.set(0, 0, "=sum(A1:A1000)");  // Some cells don’t exist
+        assertEquals(Ex2Utils.FUNC_ERR, sheet.value(0, 0));
+        sheet.set(1, 0, "=sum(A1,Hello)");
+        assertEquals(Ex2Utils.FUNC_ERR, sheet.value(1, 0));
+
+
     }
 
     @Test
@@ -130,7 +157,6 @@ class Ex2SheetTest {
         sheet.set(0, 0, "=MAX(A1)");
         assertEquals(Ex2Utils.FUNC_ERR, sheet.value(0, 0));
     }
-
     @Test
     void testMinFunction() {
         assertEquals("", sheet.value(3, 0));
