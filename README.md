@@ -15,8 +15,13 @@ This spreadsheet allows users to **work with text, numbers, and mathematical for
 
 ---
 
+## 🎥 Watch How This Project Works:
+
+👉 **Click the image below** to watch a short video demonstrating how this project works:
+
 [![Watch the video](https://img.youtube.com/vi/RPGV0H_u5x4/0.jpg)](https://www.youtube.com/watch?v=RPGV0H_u5x4)
 
+---
 
 ## **🚀 Features & Functionality**
 
