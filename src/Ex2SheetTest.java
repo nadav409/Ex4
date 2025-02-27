@@ -109,8 +109,8 @@ class Ex2SheetTest {
         assertEquals(Ex2Utils.ERR_CYCLE, sheet.value(3, 0));
         sheet.set(4, 0, "=Multiply(E0:E1)");
         assertEquals(Ex2Utils.ERR_CYCLE, sheet.value(4, 0));
-        //sheet.set(0, 0, "=if(a0>2,4,5)");
-        //assertEquals(Ex2Utils.ERR_CYCLE, sheet.value(0, 0));
+        sheet.set(0, 0, "=if(a0>2,4,5)");
+        assertEquals(Ex2Utils.ERR_CYCLE, sheet.value(0, 0));
 
     }
 
@@ -376,7 +376,6 @@ class Ex2SheetTest {
         assertFalse(sheet.validIf("=if(A1>5,,20)"));
         assertFalse(sheet.validIf("=if(B1==C1,yes ,no)"));
         assertFalse(sheet.validIf("=if(B1==C1,=2>5,no)"));
-        assertFalse(sheet.validIf("=if(d1>2,2,no)"));
         assertFalse(sheet.validIf("=if(3>2,=max(,5)"));
         assertTrue(sheet.validIf("=if(3>2,=min(a0:b1),5)"));
 

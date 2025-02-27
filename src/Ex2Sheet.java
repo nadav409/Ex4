@@ -316,6 +316,7 @@ public class Ex2Sheet implements Sheet {
     public String eval(int x, int y) {
         Cell c = table[x][y];
         String line = c.getData();// Get the data stored in the cell
+        c.setData(line);
         if (c == null || c.getType() == Ex2Utils.TEXT) {
             data[x][y] = null;
             return line;
@@ -336,7 +337,7 @@ public class Ex2Sheet implements Sheet {
                 data[x][y] = dd1;
             }
         } else if (type == Ex2Utils.IF || type == Ex2Utils.IF_ERR_FORMAT || type == Ex2Utils.ERR_WRONG_IF) {
-            if (!validIf(line)) {
+            if (!advancedValidIf(line)) {
                 c.setType(Ex2Utils.ERR_WRONG_IF);
             } else {
                 c.setType(Ex2Utils.IF);
@@ -953,25 +954,9 @@ public class Ex2Sheet implements Sheet {
             if (!isForm(leftFormula.substring(1))) {
                 return false; // Left formula must be a valid.
             }
-            try {
-                Double leftF = computeFormP(leftFormula.substring(1));
-                if (leftF == null){
-                    return false;// Left formula must be computable
-                }
-            } catch (Exception L) {
-                return false;
-            }
         } else {
             if (!isForm(leftFormula)) {
                 return false;// Right side of the condition must not be empty
-            }
-            try {
-                Double leftF = computeFormP(leftFormula);
-                if (leftF == null){
-                    return false;
-                }
-            } catch (Exception L) {
-                return false;
             }
         }
         if (rightFormula.isEmpty()) {
@@ -981,25 +966,9 @@ public class Ex2Sheet implements Sheet {
             if (!isForm(rightFormula.substring(1))) {
                 return false;
             }
-            try {
-                Double rightF = computeFormP(rightFormula.substring(1));
-                if (rightF == null){
-                    return false;
-                }
-            } catch (Exception R) {
-                return false;
-            }
         }
         else {
             if (!isForm(rightFormula)){
-                return false;
-            }
-            try {
-                Double rightF = computeFormP(rightFormula);
-                if (rightF == null){
-                    return false;
-                }
-            } catch (Exception R) {
                 return false;
             }
         }
@@ -1138,30 +1107,34 @@ public class Ex2Sheet implements Sheet {
         return false;
     }
 
-    public ArrayList<Index2D> allCellsIf(String line){
-        ArrayList<Index2D> cells = allCells(line);
+    public ArrayList<Index2D> allCellsIf(String line) {
+        String Condition = ifCondition(line);
         String ifTrue = ifTrue(line);
         String ifFalse = ifFalse(line);
-        if (SCell.isFunction(ifTrue)){
-            Range2D range = new Range2D(Range2D.findStartAndEndValid(ifTrue));
-            ArrayList<Index2D> cellsInTrue =  range.getcells();
-            cells.addAll(cellsInTrue);
-        }
-        if (SCell.isIf(ifTrue)){
+        ArrayList<Index2D> cells = allCells(Condition);
+        if (SCell.isIf(ifTrue)) {
             ArrayList<Index2D> cellsInIfTrue = allCellsIf(ifTrue);
             cells.addAll(cellsInIfTrue);
         }
-        if (SCell.isFunction(ifFalse)){
-            Range2D range1 = new Range2D(Range2D.findStartAndEndValid(ifFalse));
-            ArrayList<Index2D> cellsInFalse =  range1.getcells();
-            cells.addAll(cellsInFalse);
+        else {
+            if (ifTrue.startsWith("=") && !SCell.isFunction(ifTrue)){
+                ArrayList<Index2D> cellsInIfTrue = allCells(ifTrue);
+                cells.addAll(cellsInIfTrue);
+            }
         }
         if (SCell.isIf(ifFalse)){
             ArrayList<Index2D> cellsInIfFalse = allCellsIf(ifFalse);
             cells.addAll(cellsInIfFalse);
         }
+        else {
+            if (ifFalse.startsWith("=") && !SCell.isFunction(ifFalse)){
+                ArrayList<Index2D> cellsInIfFalse = allCells(ifFalse);
+                cells.addAll(cellsInIfFalse);
+            }
+        }
         return cells;
     }
+
 
     public boolean CheckCellsInIf(String line){
         ArrayList<Index2D> cells = allCellsIf(line);
@@ -1173,7 +1146,7 @@ public class Ex2Sheet implements Sheet {
             if (current.getData().isEmpty()){
                 return false;
             }
-            if(!advancedValidCell(current.toString())){
+            if(!advancedValidCell(cells.get(i).toString())){
                 return false;
             }
             if(current.getType() == Ex2Utils.TEXT || current.getType() == Ex2Utils.FUNC_ERR_FORMAT || current.getType() == Ex2Utils.ERR_WRONG_IF || current.getType() == Ex2Utils.ERR_CYCLE_FORM || current.getType() == Ex2Utils.ERR_FORM_FORMAT ){
