@@ -1107,6 +1107,15 @@ public class Ex2Sheet implements Sheet {
         return false;
     }
 
+    /**
+     * Extracts all the cell references used inside an IF function.
+     * - Adds all cells referenced in the IF condition.
+     * - If `ifTrue` or `ifFalse` contain another IF function, it recursively extracts their cells.
+     * - If `ifTrue` or `ifFalse` are formulas (start with `=` but are NOT functions), it extracts their referenced cells.
+     * - If `ifTrue` or `ifFalse` contain functions, they are **not** added.
+     * @param line The IF function string.
+     * @return An ArrayList containing all cell references in the IF condition.
+     */
     public ArrayList<Index2D> allCellsIf(String line) {
         String Condition = ifCondition(line);
         String ifTrue = ifTrue(line);
@@ -1135,6 +1144,14 @@ public class Ex2Sheet implements Sheet {
         return cells;
     }
 
+    /**
+     * Validates all cell references inside an IF function.
+     * - Ensures that all referenced cells exist and are not empty.
+     * - Checks that each cell is valid using `advancedValidCell()`.
+     * - Rejects any cells containing errors, text, or invalid types.
+     * @param line The IF function string.
+     * @return `true` if all referenced cells are valid, otherwise `false`.
+     */
 
     public boolean CheckCellsInIf(String line){
         ArrayList<Index2D> cells = allCellsIf(line);
