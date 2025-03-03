@@ -14,6 +14,7 @@ public class Ex2Sheet implements Sheet {
 
     /**
      * Creates a spreadsheet with given width and height.
+     *
      * @param x The number of columns.
      * @param y The number of rows.
      */
@@ -38,6 +39,7 @@ public class Ex2Sheet implements Sheet {
 
     /**
      * Gets the value stored in a specific cell.
+     *
      * @param x The column index.
      * @param y The row index.
      * @return The string representation of the cell's value.
@@ -78,6 +80,7 @@ public class Ex2Sheet implements Sheet {
 
     /**
      * Gets a cell object at a specific location.
+     *
      * @param x The column index.
      * @param y The row index.
      * @return The Cell object.
@@ -89,6 +92,7 @@ public class Ex2Sheet implements Sheet {
 
     /**
      * Gets a cell using its string coordinates (e.g., "A1").
+     *
      * @param cords The string representation of the cell coordinates.
      * @return The Cell object if found, otherwise null.
      */
@@ -121,6 +125,7 @@ public class Ex2Sheet implements Sheet {
 
     /**
      * Sets a value in the spreadsheet at the specified location.
+     *
      * @param x The column index.
      * @param y The row index.
      * @param s The value to set in the cell.
@@ -165,6 +170,7 @@ public class Ex2Sheet implements Sheet {
 
     /**
      * Checks whether the given cell coordinates are within the spreadsheet bounds.
+     *
      * @param xx The column index.
      * @param yy The row index.
      * @return True if inside the spreadsheet, otherwise false.
@@ -182,6 +188,7 @@ public class Ex2Sheet implements Sheet {
      * Computes the dependency depth for each cell.
      * This function determines the order in which cells should be computed,
      * ensuring that dependent cells are evaluated only after their dependencies.
+     *
      * @return A 2D array representing dependency of the cells.
      */
     @Override
@@ -222,6 +229,7 @@ public class Ex2Sheet implements Sheet {
     /**
      * Loads spreadsheet data from a file/
      * It reads the file line by line and extracts cell coordinates and values.
+     *
      * @param fileName The name of the file to load data from.
      * @throws IOException If an error occurs while reading the file.
      */
@@ -258,6 +266,7 @@ public class Ex2Sheet implements Sheet {
     /**
      * Saves the current spreadsheet data to a file.
      * It writes the table's content to a file line by line.
+     *
      * @param fileName The name of the file where data should be saved.
      * @throws IOException If an error occurs while writing to the file.
      */
@@ -280,7 +289,8 @@ public class Ex2Sheet implements Sheet {
     /**
      * Checks if the given dependencies allow a cell to be computed.
      * It verifies if all dependent cells have already been computed.
-     "@param deps A list of cells that must be computed before this cell.
+     * "@param deps A list of cells that must be computed before this cell.
+     *
      * @param tmpTable A temporary table tracking computed cells.
      * @return The computation depth if valid, otherwise -1.
      */
@@ -307,6 +317,7 @@ public class Ex2Sheet implements Sheet {
      * Evaluates a specific cell at the given coordinates.
      * It processes the cell's value, determines its type (text, number, formula, function, ...),
      * and computes the appropriate result.
+     *
      * @param x The column index of the cell.
      * @param y The row index of the cell.
      * @return The evaluated value of the cell as a string.
@@ -370,6 +381,7 @@ public class Ex2Sheet implements Sheet {
     /**
      * Converts a string representation of a number to an Integer.
      * Returns null if the string is not a valid integer.
+     *
      * @param line The string to be converted.
      * @return The Integer value of the string, or null if invalid.
      */
@@ -386,6 +398,7 @@ public class Ex2Sheet implements Sheet {
     /**
      * Converts a string representation of a number to a Double.
      * Returns null if the string is not a valid number.
+     *
      * @param line The string to be converted.
      * @return The Double value of the string, or null if invalid.
      */
@@ -401,6 +414,7 @@ public class Ex2Sheet implements Sheet {
 
     /**
      * Removes all spaces from the input string.
+     *
      * @param s The input string.
      * @return The string without spaces.
      */
@@ -419,6 +433,7 @@ public class Ex2Sheet implements Sheet {
     /**
      * Checks if a given string is a valid formula.
      * It removes spaces and verifies the format using `isFormP`.
+     *
      * @param form The formula string to check.
      * @return True if the string is a valid formula, otherwise false.
      */
@@ -438,6 +453,7 @@ public class Ex2Sheet implements Sheet {
     /**
      * Computes the result of a formula stored in a specific cell.
      * Removes the '=' symbol and validates the formula before computation.
+     *
      * @param x The column index of the cell.
      * @param y The row index of the cell.
      * @return The computed value as a Double, or null if invalid.
@@ -455,6 +471,7 @@ public class Ex2Sheet implements Sheet {
 
     /**
      * Checks if a given string is a properly formatted formula.
+     *
      * @param form The formula string to validate.
      * @return True if the string represents a valid formula, otherwise false.
      */
@@ -490,6 +507,7 @@ public class Ex2Sheet implements Sheet {
 
     /**
      * Extracts all referenced cells from a given formula.
+     *
      * @param line The formula string.
      * @return A list of Index2D objects representing all referenced cells.
      */
@@ -528,6 +546,7 @@ public class Ex2Sheet implements Sheet {
 
     /**
      * Computes the result of a mathematical formula recursively.
+     *
      * @param form The formula string to evaluate.
      * @return The computed result as a Double, or null if the formula is invalid.
      */
@@ -614,6 +633,7 @@ public class Ex2Sheet implements Sheet {
     /**
      * Finds the position of the last operator in an expression.
      * Used to determine where to split for recursive computation.
+     *
      * @param form The formula string.
      * @return The index of the last operator found, or -1 if none is found.
      */
@@ -645,6 +665,7 @@ public class Ex2Sheet implements Sheet {
 
     /**
      * Removes surrounding parentheses.
+     *
      * @param s The input string.
      * @return The modified string without unnecessary parentheses.
      */
@@ -658,6 +679,7 @@ public class Ex2Sheet implements Sheet {
     /**
      * Determines whether parentheses can be safely removed from a string.
      * Ensures the parentheses enclose the entire expression correctly.
+     *
      * @param s The input string.
      * @return True if the parentheses can be removed, otherwise false.
      */
@@ -684,7 +706,8 @@ public class Ex2Sheet implements Sheet {
 
     /**
      * Checks if a given character at a specific index in a string is an operator.
-     * @param line The string to check.
+     *
+     * @param line  The string to check.
      * @param words The array of operator symbols.
      * @param start The index to check for an operator.
      * @return The index of the operator in words, or -1 if not found.
@@ -702,6 +725,7 @@ public class Ex2Sheet implements Sheet {
 
     /**
      * Checks if a given string represents a valid number.
+     *
      * @param line The string to check.
      * @return True if the string can be parsed as a number, otherwise false.
      */
@@ -718,6 +742,7 @@ public class Ex2Sheet implements Sheet {
 
     /**
      * Extracts the condition part from an IF function.
+     *
      * @param line The IF function string.
      * @return The extracted condition as a string.
      */
@@ -733,6 +758,7 @@ public class Ex2Sheet implements Sheet {
     /**
      * Evaluates the condition of an IF function and returns the result.
      * Supports conditions such as <, >, <=, >=, ==, and !=.
+     *
      * @param line The IF function string.
      * @return True if the condition evaluates to true, otherwise false.
      */
@@ -771,8 +797,10 @@ public class Ex2Sheet implements Sheet {
         }
         return false;
     }
+
     /**
      * Extracts the 'true' part of an IF function.
+     *
      * @param line The IF function string.
      * @return The string representing the true case of the IF function.
      */
@@ -799,6 +827,7 @@ public class Ex2Sheet implements Sheet {
 
     /**
      * Extracts the 'false' part of an IF function.
+     *
      * @param line The IF function string.
      * @return The string representing the false case of the IF function.
      */
@@ -819,54 +848,43 @@ public class Ex2Sheet implements Sheet {
         return line.substring(indexIfTrueEnd + 1, line.length() - 1);
     }
 
-    /** Evaluates an IF function by computing its condition and returning the appropriate value.
+    /**
+     * Evaluates an IF function by computing its condition and returning the appropriate value.
      * If the condition is true, it returns the true part; otherwise, it returns the false part.
      * The true and false branches can be numbers, formulas, functions, text, or IF statements.
      * If the condition is true, it returns the true branch; otherwise, it returns the false branch.
+     *
      * @param line The IF function string.
      * @return The computed result of the IF function as an Object (Number or String).
      */
     public Object evaluateIf(String line) {
-        if (evaluateCondition(line)) {//if condition is true
-            String trueCondition = ifTrue(line);
-            if (isNumber(trueCondition)) {
-                return Double.parseDouble(trueCondition);// Convert number string to Double
-            }
-            if (SCell.isFunction(trueCondition)) {
-                Range2D range = new Range2D(Range2D.findStartAndEndValid(trueCondition));
-                range.updateValue(this);
-                return range.evaluateFunction(trueCondition);// Evaluate function in the range
-            }
-            if (SCell.BasicIsForm(trueCondition)) {
-                return computeFormP(trueCondition.substring(1));// Compute mathematical expression
-            }
-            if (SCell.isIf(trueCondition)) {
-                return evaluateIf(trueCondition);// Recursively evaluate IF statement
-            }
-            return trueCondition;// Return as a string if none of the above conditions apply
+        String conditionValue;
+        if (evaluateCondition(line)) {
+            conditionValue = ifTrue(line);
         } else {
-            String falseCondition = ifFalse(line);//if the condition is false
-            if (isNumber(falseCondition)) {
-                return Double.parseDouble(falseCondition);
-            }
-            if (SCell.isFunction(falseCondition)) {
-                Range2D range = new Range2D(Range2D.findStartAndEndValid(falseCondition));
-                range.updateValue(this);
-                return range.evaluateFunction(falseCondition);
-            }
-            if (SCell.BasicIsForm(falseCondition)) {
-                return computeFormP(falseCondition.substring(1));
-            }
-            if (SCell.isIf(falseCondition)) {
-                return evaluateIf(falseCondition);
-            }
-            return falseCondition;
+            conditionValue = ifFalse(line);
         }
+        if (isNumber(conditionValue)) {
+            return Double.parseDouble(conditionValue);// Convert number string to Double
+        }
+        if (SCell.isFunction(conditionValue)) {
+            Range2D range = new Range2D(Range2D.findStartAndEndValid(conditionValue));
+            range.updateValue(this);
+            return range.evaluateFunction(conditionValue);// Evaluate function in the range
+        }
+        if (SCell.BasicIsForm(conditionValue)) {
+            return computeFormP(conditionValue.substring(1));// Compute mathematical expression
+        }
+        if (SCell.isIf(conditionValue)) {
+            return evaluateIf(conditionValue);// Recursively evaluate IF statement
+        }
+        return conditionValue;// Return as a string if none of the above conditions apply
     }
 
     /**
      * Checks an IF function is in a correct format.
      * Checks for the correct number of commas, parentheses balance, and valid conditions.
+     *
      * @param _line The IF function string.
      * @return True if the IF function is correctly formatted, otherwise false.
      */
@@ -920,6 +938,7 @@ public class Ex2Sheet implements Sheet {
     /**
      * Check if the condition part of an IF function is valid.
      * Ensures it contains a valid comparison operator and valid formula on both sides.
+     *
      * @param _line The condition string.
      * @return True if the condition is valid, otherwise false.
      */
@@ -966,17 +985,18 @@ public class Ex2Sheet implements Sheet {
             if (!isForm(rightFormula.substring(1))) {
                 return false;
             }
-        }
-        else {
-            if (!isForm(rightFormula)){
+        } else {
+            if (!isForm(rightFormula)) {
                 return false;
             }
         }
         return true;// If all checks pass, the condition is valid
     }
+
     /**
      * Validates if the true or false parts of an IF function are valid.
      * The value can be a text,number, formula, function, or another IF statement.
+     *
      * @param line The true or false part of the IF function.
      * @return True if valid, otherwise false.
      */
@@ -1001,10 +1021,12 @@ public class Ex2Sheet implements Sheet {
         }
         return false;
     }
+
     /**
      * Counts the occurrences of a substring in a given text.
+     *
      * @param text The main text.
-     * @param sub The substring to search for.
+     * @param sub  The substring to search for.
      * @return The number of times the substring appears in the text.
      */
     public static int countOccurrences(String text, String sub) {
@@ -1017,8 +1039,10 @@ public class Ex2Sheet implements Sheet {
         }
         return count;
     }
+
     /**
      * Retrieves all referenced cells inside an IF function, including IFs and functions.
+     *
      * @param line The IF function string.
      * @return A string representation of all referenced cells.
      */
@@ -1050,9 +1074,11 @@ public class Ex2Sheet implements Sheet {
         result.append("]");
         return result.toString(); // Convert the collected cell references into a string format and return
     }
+
     /**
      * Checks if a given string represents a valid spreadsheet cell.
      * A valid cell follows the format "A0" to "Z99".
+     *
      * @param a The cell reference.
      * @return True if the cell is valid, otherwise false.
      */
@@ -1079,9 +1105,11 @@ public class Ex2Sheet implements Sheet {
         }
         return false;
     }
+
     /**
      * Checks if a given cell reference is valid within the spreadsheet dimensions.
      * Ensures the cell exists within the defined width and height.
+     *
      * @param line The cell reference string.
      * @return True if the cell exists in the sheet, otherwise false.
      */
@@ -1113,6 +1141,7 @@ public class Ex2Sheet implements Sheet {
      * - If `ifTrue` or `ifFalse` contain another IF function, it recursively extracts their cells.
      * - If `ifTrue` or `ifFalse` are formulas (start with `=` but are NOT functions), it extracts their referenced cells.
      * - If `ifTrue` or `ifFalse` contain functions, they are **not** added.
+     *
      * @param line The IF function string.
      * @return An ArrayList containing all cell references in the IF condition.
      */
@@ -1124,19 +1153,17 @@ public class Ex2Sheet implements Sheet {
         if (SCell.isIf(ifTrue)) {
             ArrayList<Index2D> cellsInIfTrue = allCellsIf(ifTrue);
             cells.addAll(cellsInIfTrue);
-        }
-        else {
-            if (ifTrue.startsWith("=") && !SCell.isFunction(ifTrue)){
+        } else {
+            if (ifTrue.startsWith("=") && !SCell.isFunction(ifTrue)) {
                 ArrayList<Index2D> cellsInIfTrue = allCells(ifTrue);
                 cells.addAll(cellsInIfTrue);
             }
         }
-        if (SCell.isIf(ifFalse)){
+        if (SCell.isIf(ifFalse)) {
             ArrayList<Index2D> cellsInIfFalse = allCellsIf(ifFalse);
             cells.addAll(cellsInIfFalse);
-        }
-        else {
-            if (ifFalse.startsWith("=") && !SCell.isFunction(ifFalse)){
+        } else {
+            if (ifFalse.startsWith("=") && !SCell.isFunction(ifFalse)) {
                 ArrayList<Index2D> cellsInIfFalse = allCells(ifFalse);
                 cells.addAll(cellsInIfFalse);
             }
@@ -1149,24 +1176,25 @@ public class Ex2Sheet implements Sheet {
      * - Ensures that all referenced cells exist and are not empty.
      * - Checks that each cell is valid using `advancedValidCell()`.
      * - Rejects any cells containing errors, text, or invalid types.
+     *
      * @param line The IF function string.
      * @return `true` if all referenced cells are valid, otherwise `false`.
      */
 
-    public boolean CheckCellsInIf(String line){
+    public boolean CheckCellsInIf(String line) {
         ArrayList<Index2D> cells = allCellsIf(line);
-        if(cells.isEmpty()){
+        if (cells.isEmpty()) {
             return true;
         }
-        for (int i = 0;i<cells.size();i++){
+        for (int i = 0; i < cells.size(); i++) {
             Cell current = get(cells.get(i).toString());
-            if (current.getData().isEmpty()){
+            if (current.getData().isEmpty()) {
                 return false;
             }
-            if(!advancedValidCell(cells.get(i).toString())){
+            if (!advancedValidCell(cells.get(i).toString())) {
                 return false;
             }
-            if(current.getType() == Ex2Utils.TEXT || current.getType() == Ex2Utils.FUNC_ERR_FORMAT || current.getType() == Ex2Utils.ERR_WRONG_IF || current.getType() == Ex2Utils.ERR_CYCLE_FORM || current.getType() == Ex2Utils.ERR_FORM_FORMAT ){
+            if (current.getType() == Ex2Utils.TEXT || current.getType() == Ex2Utils.FUNC_ERR_FORMAT || current.getType() == Ex2Utils.ERR_WRONG_IF || current.getType() == Ex2Utils.ERR_CYCLE_FORM || current.getType() == Ex2Utils.ERR_FORM_FORMAT) {
                 return false;
             }
         }
